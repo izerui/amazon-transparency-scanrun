@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/mx"
+          title="登录 Transparency 系统"
+          horizontalAlign="center"
+          layout="vertical"
+          verticalAlign="top" creationComplete="init()">
+
+    <mx:Label text="复制Cookie到以下输入框:"></mx:Label>
+
+    <mx:TextArea id="cookieArea" width="300" height="150"></mx:TextArea>
+
+    <mx:ControlBar>
+        <mx:Spacer width="100%"></mx:Spacer>
+        <s:Button id="button" fontWeight="bold" click="setCookie()" label="确定"/>
+    </mx:ControlBar>
+
+    <fx:Script><![CDATA[
+        import mx.controls.Alert;
+        import mx.core.Application;
+        import mx.managers.PopUpManager;
+        import mx.rpc.events.ResultEvent;
+
+        private function setCookie():void {
+            if (!cookieArea.text) {
+                Alert.show("请输入COOKIE!");
+                return;
+            }
+            var outDocument:Login = this;
+            RemoteObjectUtils.execute("amazonService", "validateLoginStatus", function (data:ResultEvent) {
+                if (data.result) {
+                    Application.application.cookie = cookieArea.text;
+                    PopUpManager.removePopUp(outDocument);
+                } else {
+                    Alert.show("验证失败,请重新输入!");
+                }
+            }, cookieArea.text);
+        }
+
+        private function init():void {
+            cookieArea.setFocus();
+        }
+        ]]></fx:Script>
+</mx:TitleWindow>

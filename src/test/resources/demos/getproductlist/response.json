@@ -1,0 +1,49 @@
+{
+  "data": {
+    "upc": "848467081657",
+    "asin": "B07HJGNVSH",
+    "title": "InvisibleShield-Glass Curve Elite-Apple-Watch (40mm)-Series 4-FG",
+    "revision": 1,
+    "productContainerConfigs": [
+      {
+        "internalId": "ZAGA91",
+        "gtin": "848467081657",
+        "unitsPerCase": 5,
+        "unitLabelRegExPattern": "^AZ:[A-KM-UW-Z13-9]{26}$",
+        "caseLabelRegExPattern": "^ZA:[A-Z0-9]{17}$",
+        "parentGtin": "10848467081654",
+        "childScanFirst": false,
+        "unitStringId": "Gift box",
+        "caseStringId": "Inner",
+        "trackingCases": true
+      },
+      {
+        "internalId": "ZAGA92",
+        "gtin": "10848467081654",
+        "unitsPerCase": 10,
+        "unitLabelRegExPattern": "^ZA:[A-Z0-9]{17}$",
+        "caseLabelRegExPattern": "^ZA:[A-Z0-9]{17}$",
+        "parentGtin": "20848467081651",
+        "childScanFirst": false,
+        "unitStringId": "Inner",
+        "caseStringId": "Master",
+        "trackingCases": true
+      }
+    ],
+    "attributes": {
+      "locations": [
+        {
+          "city": null,
+          "state": null,
+          "country": "CHINA"
+        }
+      ],
+      "manufacturerName": null,
+      "bestByDateRequired": false
+    },
+    "weblabEnabled": false
+  },
+  "requestId": "WN1G1FK26HTPZYW0C4G6",
+  "errorCode": null,
+  "successful": true
+}

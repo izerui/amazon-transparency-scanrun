@@ -1,0 +1,52 @@
+{
+  "scanItemRequestList": [
+    {
+      "itemId": "ZA:TBFUBRUOQFGETJ4N9",
+      "caseItemId": "",
+      "parent": true,
+      "runId": "39A98xfKT8u7BQEvmi-R8A",
+      "active": true,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:FCU4D7ACYJEI7BHRKOD3MK8NNY",
+      "caseItemId": "ZA:TBFUBRUOQFGETJ4N9",
+      "parent": false,
+      "runId": "39A98xfKT8u7BQEvmi-R8A",
+      "active": true,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:8E6R6QJUU5DGXIN6EHNGEMBITU",
+      "caseItemId": "ZA:TBFUBRUOQFGETJ4N9",
+      "parent": false,
+      "runId": "39A98xfKT8u7BQEvmi-R8A",
+      "active": true,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:SW5ZJ7I5NRE68JN61G1ZQXP4N4",
+      "caseItemId": "ZA:TBFUBRUOQFGETJ4N9",
+      "parent": false,
+      "runId": "39A98xfKT8u7BQEvmi-R8A",
+      "active": true,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:4N83UQSJPZG4NIFGPB3O8F7GA4",
+      "caseItemId": "ZA:TBFUBRUOQFGETJ4N9",
+      "parent": false,
+      "runId": "39A98xfKT8u7BQEvmi-R8A",
+      "active": true,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:8QG1DORQQRFNNJ1A7MBA6ZA38E",
+      "caseItemId": "ZA:TBFUBRUOQFGETJ4N9",
+      "parent": false,
+      "runId": "39A98xfKT8u7BQEvmi-R8A",
+      "active": true,
+      "tempCaseToken": "empty"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="flex">
+    <configurations>
+      <configuration name="flex" main-class="Index" output-file="Index.swf" output-folder="$MODULE_DIR$/../src/main/resources/public" use-html-wrapper="true" wrapper-template-path="$MODULE_DIR$/html-template">
+        <dependencies target-player="29.0">
+          <entries>
+            <entry library-id="9fc17d9f-d5ed-45b1-9a88-204a9be4d00a">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="Apache Flex Sdk 4.16.1" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="Apache Flex Sdk 4.16.1" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="9fc17d9f-d5ed-45b1-9a88-204a9be4d00a" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/GifPlayer.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
