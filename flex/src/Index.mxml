@@ -190,6 +190,7 @@
             var login:Login = new Login();
             login.addEventListener("login", function (event:LoginEvent):void {
                 scanBath = event.scanBath;
+                currentCase = null;
                 loadCaseList();
                 PopUpManager.removePopUp(login);
                 scanItemInput.setFocus();
