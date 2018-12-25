@@ -2,7 +2,6 @@ package {
 
 import loading.LoaderManager;
 
-import mx.controls.Alert;
 import mx.rpc.AbstractOperation;
 import mx.rpc.AsyncToken;
 import mx.rpc.Responder;
@@ -43,14 +42,12 @@ public class RemoteObjectUtils {
         token.addResponder(new Responder(function (event:ResultEvent) {
             LoaderManager.hideLoading();
             if (resultResponse) {
-                resultResponse(event);
+                resultResponse(true, event.result);
             }
         }, function (event:FaultEvent) {
             LoaderManager.hideLoading();
-            if(event.fault.rootCause.message){
-                Alert.show(event.fault.rootCause.message, "错误");
-            }else{
-                Alert.show(event.fault.rootCause.faultString, "错误");
+            if (resultResponse) {
+                resultResponse(false, event.fault.rootCause);
             }
         }));
     }

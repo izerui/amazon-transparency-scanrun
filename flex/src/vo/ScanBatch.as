@@ -1,0 +1,19 @@
+package vo {
+[RemoteClass(alias="com.github.izerui.pojo.ScanBatch")]
+public class ScanBatch {
+
+    public var id:String;
+    public var productTitle:String;//商品
+    public var asin:String;//ASIN
+    public var manufacturerLot:String;//批次编号
+    public var parentUpc:String; //包装箱 UPC/GTIN
+    public var manufacturerReference:String; //备注
+    public var batchId:String;
+    public var runId:String;
+    public var unitsPerCase:Number; //一个包装内单位数量
+    public var expectedCaseCount:Number;//预期包装数量
+    public var expectedCount:Number;//预期单位数量
+    public var unitLabelRegExPattern:String; // 单位正则
+    public var caseLabelRegExPattern:String; // 包装正则
+}
+}

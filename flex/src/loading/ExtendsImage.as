@@ -24,7 +24,7 @@ package loading
 			// we show it
 			addChild ( myGIFPlayer );
 			// you can also load any valid GIF stream (ByteArray) with the loadBytes method (version 0.2)
-			myGIFPlayer.load(new URLRequest("/assets/loading1.gif"));
+			myGIFPlayer.load(new URLRequest("/assets/loading.gif"));
 		}
 	}
 }

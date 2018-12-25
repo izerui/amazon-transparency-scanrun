@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:mx="library://ns.adobe.com/flex/mx"
-               xmlns:s="library://ns.adobe.com/flex/spark" xmlns:local="*"
-               currentState="product"
-               creationComplete="validateCookie()">
+               xmlns:s="library://ns.adobe.com/flex/spark">
 
     <s:layout>
         <s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
@@ -16,68 +14,327 @@
     </fx:Style>
 
     <fx:Script><![CDATA[
+        import events.LoginEvent;
+
+        import mx.collections.ArrayCollection;
+        import mx.core.SoundAsset;
+        import mx.events.ListEvent;
         import mx.managers.PopUpManager;
 
-        import vo.ProductContainerConfigs;
+        import vo.ScanBatch;
+        import vo.ScanCase;
 
-        //        private var keepTimer:Timer;
+        [Embed(source="/assets/success.mp3")]
+        public var successVoice:Class;
+
+        [Embed(source="/assets/error.mp3")]
+        public var errorVoice:Class;
+
 
         [Bindable]
         public var cookie:String;
         [Bindable]
-        public var product:vo.Product;
-        [Bindable]
-        public var productBoxItem:ProductContainerConfigs;
-        [Bindable]
-        public var manufacturerLot:String;
-        [Bindable]
-        public var expectedCount:String;
-        [Bindable]
-        public var manufacturerReference:String;
+        public var scanBath:ScanBatch;
 
-        public function validateCookie():void {
-            if (!cookie) {
-                var login:Login = new Login();
-                PopUpManager.addPopUp(login, this, true);
-                PopUpManager.centerPopUp(login);
+        public var _unitList:ArrayCollection = new ArrayCollection();
+        public var _caseList:ArrayCollection = new ArrayCollection();
+
+        [Bindable]
+        public var currentCase:ScanCase;
+
+        [Bindable]
+        protected var actualCount:Number = 0; //已扫描单位数
+
+        [Bindable]
+        protected var unitCount:Number = 0; //已扫描当前包装箱的单位数
+
+        [Bindable]
+        protected var actualCaseCount:Number = 0; //已扫描包装箱数
+
+
+        public function set caseList(list:ArrayCollection):void {
+            _caseList = list;
+            actualCount = 0;
+            actualCaseCount = 0;
+            if (list != null) {
+                for each(var caseItem in caseList) {
+                    actualCount += caseItem.count as Number;
+                }
+                actualCaseCount = list.length;
+            }
+
+        }
+
+        [Bindable]
+        public function get caseList():ArrayCollection {
+            return _caseList;
+        }
+
+
+        public function set unitList(list:ArrayCollection):void {
+            _unitList = list;
+            if (list == null) {
+                unitCount = 0;
+            } else {
+                unitCount = list.length;
             }
         }
 
-        //        private function keepCookie():void {
-        //            if (keepTimer == null) {
-        //                keepTimer = new Timer(5000, 0);
-        //                keepTimer.addEventListener(TimerEvent.TIMER, function (event:TimerEvent):void {
-        //                    RemoteObjectUtils.execute("amazonService", "validateLoginStatus", function (data:ResultEvent) {
-        //                        if (!data.result) {
-        //                            cookie = null;
-        //                            validateCookie();
-        //                        }
-        //                    }, cookie);
-        //                });
-        //            }
-        //            keepTimer.start();
-        //        }
+        [Bindable]
+        public function get unitList():ArrayCollection {
+            return _unitList;
+        }
 
-        //        private function destroyKeeper():void {
-        //            keepTimer.stop();
-        //        }
+        [Bindable]
+        public var keyString:String = "";
+
+
+        [Bindable]
+        public function get unitsPerCase():Number {
+            if (scanBath && scanBath.unitsPerCase) {
+                return new Number(scanBath.unitsPerCase);
+            }
+            return 0;
+        }
+
+
+        //扫描添加
+        private function scan(itemId:String):void {
+            //第一次扫包装盒 或者 当前包装盒装满的情况下
+            if (!currentCase == null || currentCase.count >= unitsPerCase) {
+                if (!itemId || !isCase(itemId)) {
+                    reset(false, "请扫描一个新的包装");
+                    return;
+                }
+                saveCase(itemId);
+            } else { //未装满继续装
+                if (!itemId || !isUnit(itemId)) {
+                    reset(false, "请扫描包装 " + currentCase.itemId + " 内的货品");
+                    return;
+                }
+                saveUnit(itemId);
+            }
+        }
+
+        private function reset(success:Boolean, msg:String):void {
+            scanItemInput.text = "";
+            errMsgText.text = msg;
+            if (success) {
+                errMsgText.setStyle("color", "green");
+                SoundAsset(new successVoice).play();
+            } else {
+                errMsgText.setStyle("color", "red");
+                SoundAsset(new errorVoice).play();
+            }
+        }
+
+        private function saveCase(itemId:String):void {
+            RemoteObjectUtils.execute("dataService", "saveCase", function (success:Boolean, data:Object) {
+                        if (success) {
+                            loadCaseList();
+                            reset(true, "扫描了包装 " + itemId);
+                        } else {
+                            reset(false, data.message);
+                        }
+                    },
+                    scanBath.batchId,
+                    itemId
+            );
+        }
+
+        private function saveUnit(itemId:String):void {
+            RemoteObjectUtils.execute("dataService", "saveItem", function (success:Boolean, data:Object) {
+                        if (success) {
+                            loadCaseList();
+                            reset(true, "扫描了货品 " + itemId);
+                        } else {
+                            reset(false, data.message);
+                        }
+                    },
+                    scanBath.batchId,
+                    currentCase.itemId,
+                    itemId
+            );
+        }
+
+
+        //是否是单位
+        private function isUnit(inputTxt:String):Boolean {
+            var reg:RegExp = new RegExp(scanBath.unitLabelRegExPattern);
+            return reg.test(inputTxt);
+        }
+
+        //是否是包装
+        private function isCase(inputTxt:String):Boolean {
+            var reg:RegExp = new RegExp(scanBath.caseLabelRegExPattern);
+            return reg.test(inputTxt);
+        }
+
+        //取消运行
+        private function cancelRun(event:MouseEvent):void {
+            RemoteObjectUtils.execute("amazonService", "cancelScanRun", function (success:Boolean, data:Object) {
+                        if (success) {
+                            scanBath = null;
+                            reset(true, "成功取消运行")
+                        } else {
+                            reset(false, data.message);
+                        }
+                    },
+                    cookie,
+                    scanBath.runId
+            );
+        }
+
+        //获取运行信息
+        private function login(event:MouseEvent):void {
+            var login:Login = new Login();
+            login.addEventListener("login", function (event:LoginEvent):void {
+                scanBath = event.scanBath;
+                loadCaseList();
+                PopUpManager.removePopUp(login);
+                scanItemInput.setFocus();
+            })
+            PopUpManager.addPopUp(login, this, true);
+            PopUpManager.centerPopUp(login);
+        }
+
+        // 刷新包装列表
+        public function loadCaseList():void {
+            caseList = new ArrayCollection();
+            unitList = new ArrayCollection();
+            caseGrid.selectedIndex = -1;
+            RemoteObjectUtils.execute("dataService", "findCaseList", function (success:Boolean, data:Object) {
+                        if (success) {
+                            caseList = data as ArrayCollection;
+                            // 如果有包装列表
+                            if (caseList != null && caseList.length > 0) {
+                                currentCase = caseList.getItemAt(0) as ScanCase;
+                                loadUnitList();
+                            }
+                        } else {
+                            reset(false, data.message);
+                        }
+                    },
+                    scanBath.batchId,
+                    "unDone"
+            );
+        }
+
+        // 刷新单位列表
+        public function loadUnitList():void {
+            RemoteObjectUtils.execute("dataService", "findItemList", function (success:Boolean, data:Object) {
+                        if (success) {
+                            unitList = data as ArrayCollection;
+                        } else {
+                            reset(false, data.message);
+                        }
+                    },
+                    scanBath.batchId,
+                    currentCase.itemId,
+                    "unDone"
+            );
+        }
+
+        private function scanItemInput_keyDownHandler(event:KeyboardEvent):void {
+            if (event.keyCode == Keyboard.ENTER) {
+                scan(scanItemInput.text);
+            }
+        }
+
+        private function caseGrid_itemClickHandler(event:ListEvent):void {
+            if (caseGrid.selectedIndex != -1) {
+                currentCase = caseGrid.selectedItem as ScanCase;
+//                reset(true,"更换了包装: "+currentCase.itemId);
+            }
+            loadUnitList();
+        }
         ]]>
     </fx:Script>
 
     <mx:Panel title="SourceMark v2"
               width="100%"
               height="100%"
+              paddingLeft="10"
+              paddingRight="10"
+              paddingBottom="10"
               horizontalAlign="center"
               verticalAlign="middle">
 
-        <local:Product includeIn="product"></local:Product>
-        <local:ScanItems includeIn="scanItems"></local:ScanItems>
+        <mx:HBox width="100%">
+            <mx:Form width="80%">
+                <mx:FormItem label="RUNID:">
+                    <mx:HBox>
+                        <mx:Text text="{scanBath.runId}"></mx:Text>
+                        <mx:Button label="获取runId" click="login(event)"></mx:Button>
+                    </mx:HBox>
+                </mx:FormItem>
+                <mx:FormItem label="商品:">
+                    <mx:Text text="{scanBath.productTitle}"></mx:Text>
+                </mx:FormItem>
+                <mx:FormItem label="批次编号:">
+                    <mx:Text text="{scanBath.manufacturerLot}"></mx:Text>
+                </mx:FormItem>
+                <mx:FormItem label="ASIN:">
+                    <mx:Text text="{scanBath.asin}"></mx:Text>
+                </mx:FormItem>
+                <mx:FormItem label="备注:">
+                    <mx:Text text="{scanBath.manufacturerReference}"></mx:Text>
+                </mx:FormItem>
+                <mx:FormItem label="包装箱 UPC/GTIN:">
+                    <mx:Text text="{scanBath.parentUpc}"></mx:Text>
+                </mx:FormItem>
+                <mx:FormItem label="扫描条码:">
+                    <mx:TextInput fontSize="25" height="40" id="scanItemInput" minWidth="350" text="{keyString}"
+                                  keyDown="scanItemInput_keyDownHandler(event)"></mx:TextInput>
+                </mx:FormItem>
+                <mx:FormItem label="当前包装:">
+                    <mx:Text fontSize="20" fontWeight="bold" text="{currentCase.itemId}"></mx:Text>
+                </mx:FormItem>
+                <mx:FormItem label="信息:">
+                    <mx:Text fontSize="20" fontWeight="bold" color="red" id="errMsgText"></mx:Text>
+                </mx:FormItem>
+            </mx:Form>
+            <mx:VBox width="20%">
+                <mx:Panel title="已扫描的 单位 标签数量" width="100%" height="120" horizontalAlign="center"
+                          verticalAlign="middle">
+                    <mx:Label text="{actualCount} / {scanBath.expectedCount}" fontWeight="bold" fontSize="28"/>
+                </mx:Panel>
+                <mx:HBox width="100%" height="100%">
+                    <mx:Panel title="扫描到当前 包装箱 中的 单位 标签数量" width="100%" height="120" horizontalAlign="center"
+                              verticalAlign="middle">
+                        <mx:Label text="{unitCount} / {scanBath.unitsPerCase}"
+                                  fontWeight="bold" fontSize="28"/>
+                    </mx:Panel>
+                    <mx:Panel title="已扫描的 包装箱 标签数量" width="100%" height="120" horizontalAlign="center"
+                              verticalAlign="middle">
+                        <mx:Label text="{actualCaseCount} / {scanBath.expectedCaseCount}" fontWeight="bold"
+                                  fontSize="28"/>
+                    </mx:Panel>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:HBox>
+
+        <mx:HBox width="100%" height="100%" paddingLeft="20" paddingRight="20">
+            <mx:Panel width="100%" height="100%" title="已扫描包装列表">
+                <mx:DataGrid id="caseGrid" width="100%" height="100%" dataProvider="{caseList}"
+                             itemClick="caseGrid_itemClickHandler(event)">
+                    <mx:columns>
+                        <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="已包装数" dataField="count"
+                                           width="100"></mx:DataGridColumn>
+                    </mx:columns>
+                </mx:DataGrid>
+            </mx:Panel>
+            <mx:Panel width="100%" height="100%" title="已扫描单位列表">
+                <mx:DataGrid id="unitGrid" width="100%" height="100%" dataProvider="{unitList}">
+                    <mx:columns>
+                        <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId"
+                                           width="100"></mx:DataGridColumn>
+                    </mx:columns>
+                </mx:DataGrid>
+            </mx:Panel>
+        </mx:HBox>
 
     </mx:Panel>
-
-    <s:states>
-        <mx:State name="product"></mx:State>
-        <mx:State name="scanItems"></mx:State>
-    </s:states>
 
 </s:Application>

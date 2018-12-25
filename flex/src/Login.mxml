@@ -1,25 +1,30 @@
 <?xml version="1.0"?>
 <mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
-          xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/mx"
-          title="登录 Transparency 系统"
-          horizontalAlign="center"
-          layout="vertical"
-          verticalAlign="top" creationComplete="init()">
+                xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/mx"
+                title="登录 Transparency 系统"
+                horizontalAlign="center"
+                layout="vertical"
+                verticalAlign="top" creationComplete="init()">
 
     <mx:Label text="复制Cookie到以下输入框:"></mx:Label>
 
-    <mx:TextArea id="cookieArea" width="300" height="150"></mx:TextArea>
+    <mx:TextArea id="cookieArea" width="300" height="150" text="@{Application.application.cookie}"></mx:TextArea>
 
     <mx:ControlBar>
         <mx:Spacer width="100%"></mx:Spacer>
+        <s:Button id="buttonCancel" fontWeight="bold" click="PopUpManager.removePopUp(this);" label="取消"/>
         <s:Button id="button" fontWeight="bold" click="setCookie()" label="确定"/>
     </mx:ControlBar>
 
     <fx:Script><![CDATA[
+        import events.LoginEvent;
+
         import mx.controls.Alert;
         import mx.core.Application;
         import mx.managers.PopUpManager;
         import mx.rpc.events.ResultEvent;
+
+        import vo.ScanBatch;
 
         private function setCookie():void {
             if (!cookieArea.text) {
@@ -27,14 +32,15 @@
                 return;
             }
             var outDocument:Login = this;
-            RemoteObjectUtils.execute("amazonService", "validateLoginStatus", function (data:ResultEvent) {
-                if (data.result) {
-                    Application.application.cookie = cookieArea.text;
-                    PopUpManager.removePopUp(outDocument);
-                } else {
-                    Alert.show("验证失败,请重新输入!");
-                }
-            }, cookieArea.text);
+            RemoteObjectUtils.execute("dataService", "createBatch", function (success:Boolean, data:Object) {
+                        if (success) {
+                            var event:LoginEvent = new LoginEvent(data as ScanBatch);
+                            dispatchEvent(event);
+                        } else {
+                            Alert.show(data.message,'错误');
+                        }
+                    },
+                    Application.application.cookie);
         }
 
         private function init():void {
