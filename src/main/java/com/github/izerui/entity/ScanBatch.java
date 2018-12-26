@@ -1,4 +1,4 @@
-package com.github.izerui.pojo;
+package com.github.izerui.entity;
 
 import javax.persistence.*;
 

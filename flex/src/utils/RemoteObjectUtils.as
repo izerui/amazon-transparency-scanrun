@@ -1,4 +1,4 @@
-package {
+package utils {
 
 import loading.LoaderManager;
 
@@ -11,23 +11,6 @@ import mx.rpc.remoting.RemoteObject;
 
 public class RemoteObjectUtils {
     public function RemoteObjectUtils() {
-    }
-
-    public static function executeQuiet(destination:String, method:String, resultResponse:Function, ...args):void {
-        var remoteService:RemoteObject = new RemoteObject(destination);
-        remoteService.endpoint = "/messagebroker/amf";
-
-        var remoteMethod:AbstractOperation = remoteService.getOperation(method);
-        remoteMethod.arguments = args;
-
-        var token:AsyncToken = remoteMethod.send();
-        token.addResponder(new Responder(function (event:ResultEvent) {
-            if (resultResponse) {
-                resultResponse(event);
-            }
-        }, function (event:FaultEvent) {
-//            Alert.show(event.fault.rootCause.message, "错误");
-        }));
     }
 
     public static function execute(destination:String, method:String, resultResponse:Function, ...args):void {

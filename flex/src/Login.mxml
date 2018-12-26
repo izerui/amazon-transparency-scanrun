@@ -22,7 +22,8 @@
         import mx.controls.Alert;
         import mx.core.Application;
         import mx.managers.PopUpManager;
-        import mx.rpc.events.ResultEvent;
+
+        import utils.RemoteObjectUtils;
 
         import vo.ScanBatch;
 
@@ -37,7 +38,7 @@
                             var event:LoginEvent = new LoginEvent(data as ScanBatch);
                             dispatchEvent(event);
                         } else {
-                            Alert.show(data.message,'错误');
+                            Alert.show(data.message, '错误');
                         }
                     },
                     Application.application.cookie);

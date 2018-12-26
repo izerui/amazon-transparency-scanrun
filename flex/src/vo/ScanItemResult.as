@@ -1,5 +1,5 @@
 package vo {
-[RemoteClass(alias="com.github.izerui.pojo.ScanItemResult")]
+[RemoteClass(alias="com.github.izerui.entity.ScanItemResult")]
 public class ScanItemResult {
     public var requestStatus:String;
     public var scanItemId:String;

@@ -1,5 +1,5 @@
 package vo {
-[RemoteClass(alias="com.github.izerui.pojo.ScanBatch")]
+[RemoteClass(alias="com.github.izerui.entity.ScanBatch")]
 public class ScanBatch {
 
     public var id:String;

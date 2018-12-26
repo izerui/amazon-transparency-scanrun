@@ -1,7 +1,7 @@
 package com.github.izerui;
 
 import com.github.izerui.dao.ScanItemDao;
-import com.github.izerui.pojo.ScanCase;
+import com.github.izerui.pojo.ScanItemRequest;
 import com.github.izerui.pojo.ScanResult;
 import com.github.izerui.service.AmazonService;
 import com.google.common.collect.Lists;
@@ -67,20 +67,20 @@ public class ScanRunTests {
 //        }
 //    }
 
-//    @Test
-//    public void testSelectItems() throws IOException {
-//
-//        ScanCase item = new ScanCase();
-//        item.setItemId("AZ:XDSAKHQXJ5AOBIBPTMKBMS9ZGE");
-//        item.setCaseItemId("ZA:GES5FR6OANGPBM38F");
-//        item.setParent(false);
-//        item.setRunId("SndbmDShSkStCTeIPE1NWA");
-//        item.setActive(false);
-//        item.setTempCaseToken("empty");
-//
-//        ScanResult scanResult = amazonService.scanItems(cookie, false, Lists.newArrayList(item));
-//        System.out.println(scanResult);
-//    }
+    @Test
+    public void testSelectItems() throws IOException {
+
+        ScanItemRequest item = new ScanItemRequest();
+        item.setItemId("AZ:XDSAKHQXJ5AOBIBPTMKBMS9ZGE");
+        item.setCaseItemId("ZA:GES5FR6OANGPBM38F");
+        item.setParent(false);
+        item.setRunId("SndbmDShSkStCTeIPE1NWA");
+        item.setActive(false);
+        item.setTempCaseToken("empty");
+
+        ScanResult scanResult = amazonService.scanItems(cookie, Lists.newArrayList(item));
+        System.out.println(scanResult);
+    }
 
     @Test
     public void cancelRun() throws IOException {

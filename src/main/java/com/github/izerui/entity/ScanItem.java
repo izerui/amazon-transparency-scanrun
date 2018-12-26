@@ -1,4 +1,4 @@
-package com.github.izerui.pojo;
+package com.github.izerui.entity;
 
 import javax.persistence.*;
 
@@ -12,7 +12,6 @@ import javax.persistence.*;
                 @Index(name = "scanTime", columnList = "scanTime"),
                 @Index(name = "batchId", columnList = "batchId"),
                 @Index(name = "caseItemId", columnList = "caseItemId"),
-                @Index(name = "status", columnList = "status"),
                 @Index(name = "itemId", columnList = "itemId"),
         }
 )
@@ -29,7 +28,9 @@ public class ScanItem {
     private String caseItemId; //包装id
     private Long scanTime;//扫描时间
     @Column(length = 12)
-    private String status;//同步状态 unDone Done
+    private String requestStatus; //同步状态
+    @Column(length = 128)
+    private String failureReason; //失败原因
 
     public Long getId() {
         return id;
@@ -71,11 +72,19 @@ public class ScanItem {
         this.scanTime = scanTime;
     }
 
-    public String getStatus() {
-        return status;
+    public String getRequestStatus() {
+        return requestStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRequestStatus(String requestStatus) {
+        this.requestStatus = requestStatus;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 }

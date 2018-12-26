@@ -2,7 +2,7 @@ package com.github.izerui.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.izerui.pojo.ScanCase;
+import com.github.izerui.pojo.ScanItemRequest;
 import com.github.izerui.pojo.ScanResult;
 import com.github.izerui.support.JMap;
 import okhttp3.*;
@@ -71,15 +71,11 @@ public class AmazonService {
      * 扫描提交
      *
      * @param cookie
-     * @param active       true：同步amazon  false：不同步
      * @param scanItemList 扫描的多个对象
      * @return
      * @throws IOException
      */
-    public ScanResult scanItems(String cookie, boolean active, List<ScanCase> scanItemList) throws IOException {
-//        for (ScanCase scanItem : scanItemList) {
-//            scanItem.setActive(active);
-//        }
+    public ScanResult scanItems(String cookie, List<ScanItemRequest> scanItemList) throws IOException {
         Request request = new Request.Builder()
                 .url("https://www.amazon.com/authenticity/scanitems")
                 .header("cookie", cookie)

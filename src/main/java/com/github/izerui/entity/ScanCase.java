@@ -1,7 +1,7 @@
 /**
  * Copyright 2018 bejson.com
  */
-package com.github.izerui.pojo;
+package com.github.izerui.entity;
 
 import javax.persistence.*;
 
@@ -14,7 +14,6 @@ import javax.persistence.*;
         indexes = {
                 @Index(name = "scanTime", columnList = "scanTime"),
                 @Index(name = "batchId", columnList = "batchId"),
-                @Index(name = "status", columnList = "status"),
                 @Index(name = "itemId", columnList = "itemId"),
         }
 )
@@ -30,8 +29,9 @@ public class ScanCase {
     private String itemId;//条码内容
     private Long scanTime;//扫描时间
     @Column(length = 12)
-    private String status;//同步状态 unDone Done
-
+    private String requestStatus; //同步状态
+    @Column(length = 128)
+    private String failureReason; //失败原因
 
     //包装下的数量
     private long count;
@@ -68,19 +68,27 @@ public class ScanCase {
         this.scanTime = scanTime;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public long getCount() {
         return count;
     }
 
     public void setCount(long count) {
         this.count = count;
+    }
+
+    public String getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(String requestStatus) {
+        this.requestStatus = requestStatus;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 }
