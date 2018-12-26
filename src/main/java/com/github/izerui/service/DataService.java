@@ -90,6 +90,7 @@ public class DataService {
                 .where("batchId").is(batchId)
                 .and("itemId").is(itemId);
         Assert.state(scanCaseDao.count(conditions) == 0, "包装 " + itemId + " 已扫描过");
+        Assert.state(scanItemDao.count(conditions) == 0, itemId + " 已经在同批次包装中使用过");
         //TODO 包装 itemId 已经在同批次货品中使用过
         ScanCase one = new ScanCase();
         one.setBatchId(batchId);
@@ -107,7 +108,7 @@ public class DataService {
                 .where("batchId").is(batchId)
                 .and("itemId").is(itemId);
         Assert.state(scanItemDao.count(conditions) == 0, "货品 " + itemId + " 已扫描过");
-        //TODO 货品 itemId 已经在同批次包装中使用过
+        Assert.state(scanCaseDao.count(conditions) == 0, itemId + " 已经在同批次包装中使用过");
         ScanCase caseOne = scanCaseDao.findOne(Conditions.where("batchId").is(batchId).and("itemId").is(caseItemId));
         Assert.notNull(caseOne, "未找到包装");
         caseOne.setScanTime(System.currentTimeMillis());
@@ -164,7 +165,7 @@ public class DataService {
         List<ScanItemRequest> requestList = null;
         ScanBatch batch = scanBatchDao.findOne(Conditions.where("batchId").is(batchId));
         List<ScanCase> caseList = this.findCaseList(batchId, false);
-        if(caseList == null || caseList.isEmpty()){
+        if (caseList == null || caseList.isEmpty()) {
             throw new RuntimeException("没有可提交的数据");
         }
         for (ScanCase scanCase : caseList) {
@@ -213,7 +214,7 @@ public class DataService {
 
             }
         }
-        amazonService.completeScan(cookie,batch.getRunId());
+        amazonService.completeScan(cookie, batch.getRunId());
     }
 
 }
