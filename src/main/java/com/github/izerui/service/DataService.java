@@ -18,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RemotingDestination
 @Service
@@ -93,6 +90,7 @@ public class DataService {
                 .where("batchId").is(batchId)
                 .and("itemId").is(itemId);
         Assert.state(scanCaseDao.count(conditions) == 0, "包装 " + itemId + " 已扫描过");
+        //TODO 包装 itemId 已经在同批次货品中使用过
         ScanCase one = new ScanCase();
         one.setBatchId(batchId);
         one.setItemId(itemId);
@@ -109,6 +107,7 @@ public class DataService {
                 .where("batchId").is(batchId)
                 .and("itemId").is(itemId);
         Assert.state(scanItemDao.count(conditions) == 0, "货品 " + itemId + " 已扫描过");
+        //TODO 货品 itemId 已经在同批次包装中使用过
         ScanCase caseOne = scanCaseDao.findOne(Conditions.where("batchId").is(batchId).and("itemId").is(caseItemId));
         Assert.notNull(caseOne, "未找到包装");
         caseOne.setScanTime(System.currentTimeMillis());
@@ -192,20 +191,20 @@ public class DataService {
                 requestList.add(itemRequest);
             }
             ScanResult scanResult = amazonService.scanItems(cookie, requestList);
-            amazonService.completeScan(cookie,batch.getRunId());
-
             for (ScanItemResult itemResult : scanResult.getScanItemResultList()) {
                 if (itemResult.getScanItemId().equals(scanCase.getItemId())) {
-                    scanCase.setSubmited(true);
                     // 更新包装的同步状态
+                    scanCase.setSubmited(true);
                     scanCase.setRequestStatus(itemResult.getRequestStatus());
                     scanCase.setFailureReason(itemResult.getFailureReason());
+                    scanCase.setSubmitTime(new Date());
                     scanCaseDao.save(scanCase);
                 }
                 for (ScanItem scanItem : scanItems) {
                     if (itemResult.getScanItemId().equals(scanItem.getItemId())) {
                         // 更新包装内货品的同步状态
                         scanItem.setSubmited(true);
+                        scanItem.setSubmitTime(new Date());
                         scanItem.setRequestStatus(itemResult.getRequestStatus());
                         scanItem.setFailureReason(itemResult.getFailureReason());
                         scanItemDao.save(scanItem);
@@ -214,6 +213,7 @@ public class DataService {
 
             }
         }
+        amazonService.completeScan(cookie,batch.getRunId());
     }
 
 }

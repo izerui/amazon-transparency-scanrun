@@ -1,6 +1,7 @@
 package com.github.izerui.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 单位
@@ -32,6 +33,7 @@ public class ScanItem {
     private String requestStatus; //同步状态
     @Column(length = 128)
     private String failureReason; //失败原因
+    private Date submitTime; //提交时间
 
     public Long getId() {
         return id;
@@ -95,5 +97,13 @@ public class ScanItem {
 
     public void setSubmited(boolean submited) {
         this.submited = submited;
+    }
+
+    public Date getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Date submitTime) {
+        this.submitTime = submitTime;
     }
 }

@@ -20,6 +20,7 @@
         import mx.controls.Alert;
         import mx.core.SoundAsset;
         import mx.events.ListEvent;
+        import mx.formatters.DateFormatter;
         import mx.managers.PopUpManager;
 
         import utils.AlertShow;
@@ -260,9 +261,11 @@
                             if (success) {
                                 Alert.show("已成功提交数据到亚马逊Transparency系统", "成功");
                                 selectedBox.selected = true;
+                                errMsgText.text = "请登录亚马逊新创建一个货柜,并获取cookie!"
                                 loadCaseList();
                             } else {
                                 Alert.show("提交数据失败 " + data.message, "失败");
+                                scanItemInput.setFocus();
                             }
                         },
                         cookie,
@@ -277,6 +280,18 @@
                 scanItemInput.setFocus();
             }
             loadCaseList();
+        }
+
+        private function submitLabelFun(data:ScanCase, column:DataGridColumn):String {
+            var df:DateFormatter = new DateFormatter();
+            df.formatString = "YYYY-MM-DD JJ:NN:SS";
+            return data.requestStatus + ' ' + df.format(data.submitTime) + ' ' + data.failureReason;
+        }
+
+        private function unitSubmitLabelFun(data:Object, column:DataGridColumn):String {
+            var df:DateFormatter = new DateFormatter();
+            df.formatString = "YYYY-MM-DD JJ:NN:SS";
+            return data.requestStatus + ' ' + df.format(data.submitTime) + ' ' + data.failureReason;
         }
         ]]>
     </fx:Script>
@@ -356,9 +371,7 @@
                         <mx:DataGridColumn sortable="false" headerText="已包装数" dataField="count"
                                            width="100"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
-                                           width="120"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="失败原因"
-                                           dataField="failureReason"></mx:DataGridColumn>
+                                           labelFunction="submitLabelFun"></mx:DataGridColumn>
 
                     </mx:columns>
                 </mx:DataGrid>
@@ -369,9 +382,7 @@
                         <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId"
                                            width="400"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
-                                           width="120"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="失败原因"
-                                           dataField="failureReason"></mx:DataGridColumn>
+                                           labelFunction="unitSubmitLabelFun"></mx:DataGridColumn>
                     </mx:columns>
                 </mx:DataGrid>
             </mx:Panel>

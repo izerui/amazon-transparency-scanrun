@@ -4,6 +4,7 @@
 package com.github.izerui.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 包装
@@ -29,6 +30,7 @@ public class ScanCase {
     private String itemId;//条码内容
     private Long scanTime;//扫描时间
     private boolean submited; //提交状态
+    private Date submitTime; //提交时间
     @Column(length = 12)
     private String requestStatus; //同步状态
     @Column(length = 128)
@@ -99,5 +101,13 @@ public class ScanCase {
 
     public void setSubmited(boolean submited) {
         this.submited = submited;
+    }
+
+    public Date getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Date submitTime) {
+        this.submitTime = submitTime;
     }
 }

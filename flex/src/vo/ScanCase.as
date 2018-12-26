@@ -10,5 +10,6 @@ public class ScanCase {
     public var requestStatus:String;//同步状态
     public var failureReason:String;//失败原因
     public var count:Number;//包装下的数量
+    public var submitTime:Date;//提交时间
 }
 }
