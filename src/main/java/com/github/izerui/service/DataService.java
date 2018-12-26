@@ -136,9 +136,10 @@ public class DataService {
      * @param batchId
      * @return
      */
-    public List<ScanCase> findCaseList(String batchId) {
+    public List<ScanCase> findCaseList(String batchId, boolean submited) {
         Conditions conditions = Conditions
-                .where("batchId").is(batchId);
+                .where("batchId").is(batchId)
+                .and("submited").is(submited);
         List<ScanCase> caseList = scanCaseDao.findAll(conditions, Sort.by(Sort.Direction.DESC, "scanTime"));
         return caseList;
     }
@@ -150,10 +151,11 @@ public class DataService {
      * @param batchId
      * @return
      */
-    public List<ScanItem> findItemList(String batchId, String caseItemId) {
+    public List<ScanItem> findItemList(String batchId, String caseItemId, boolean submited) {
         Conditions conditions = Conditions
                 .where("batchId").is(batchId)
-                .and("caseItemId").is(caseItemId);
+                .and("caseItemId").is(caseItemId)
+                .and("submited").is(submited);
         List<ScanItem> itemList = scanItemDao.findAll(conditions, Sort.by(Sort.Direction.DESC, "scanTime"));
         return itemList;
     }
@@ -162,10 +164,11 @@ public class DataService {
     public void submitScan(String cookie, String batchId) throws IOException {
         List<ScanItemRequest> requestList = null;
         ScanBatch batch = scanBatchDao.findOne(Conditions.where("batchId").is(batchId));
-        List<ScanCase> caseList = this.findCaseList(batchId);
+        List<ScanCase> caseList = this.findCaseList(batchId, false);
+        if(caseList == null || caseList.isEmpty()){
+            throw new RuntimeException("没有可提交的数据");
+        }
         for (ScanCase scanCase : caseList) {
-            List<ScanItem> itemList = this.findItemList(batchId, scanCase.getItemId());
-
             ScanItemRequest caseRequest = new ScanItemRequest();
             caseRequest.setItemId(scanCase.getItemId());
             caseRequest.setCaseItemId("");
@@ -177,7 +180,7 @@ public class DataService {
             requestList = new ArrayList<>();
             requestList.add(caseRequest);
 
-            List<ScanItem> scanItems = this.findItemList(batchId, scanCase.getItemId());
+            List<ScanItem> scanItems = this.findItemList(batchId, scanCase.getItemId(), false);
             for (ScanItem scanItem : scanItems) {
                 ScanItemRequest itemRequest = new ScanItemRequest();
                 itemRequest.setItemId(scanItem.getItemId());
@@ -193,6 +196,7 @@ public class DataService {
 
             for (ScanItemResult itemResult : scanResult.getScanItemResultList()) {
                 if (itemResult.getScanItemId().equals(scanCase.getItemId())) {
+                    scanCase.setSubmited(true);
                     // 更新包装的同步状态
                     scanCase.setRequestStatus(itemResult.getRequestStatus());
                     scanCase.setFailureReason(itemResult.getFailureReason());
@@ -201,6 +205,7 @@ public class DataService {
                 for (ScanItem scanItem : scanItems) {
                     if (itemResult.getScanItemId().equals(scanItem.getItemId())) {
                         // 更新包装内货品的同步状态
+                        scanItem.setSubmited(true);
                         scanItem.setRequestStatus(itemResult.getRequestStatus());
                         scanItem.setFailureReason(itemResult.getFailureReason());
                         scanItemDao.save(scanItem);

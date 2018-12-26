@@ -28,6 +28,7 @@ public class ScanCase {
     @Column(length = 64)
     private String itemId;//条码内容
     private Long scanTime;//扫描时间
+    private boolean submited; //提交状态
     @Column(length = 12)
     private String requestStatus; //同步状态
     @Column(length = 128)
@@ -90,5 +91,13 @@ public class ScanCase {
 
     public void setFailureReason(String failureReason) {
         this.failureReason = failureReason;
+    }
+
+    public boolean isSubmited() {
+        return submited;
+    }
+
+    public void setSubmited(boolean submited) {
+        this.submited = submited;
     }
 }
