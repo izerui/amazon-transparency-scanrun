@@ -105,7 +105,7 @@
 
         //扫描添加
         private function scan(itemId:String):void {
-            if(!scanBath.runId){
+            if (!scanBath.runId) {
                 login();
             }
             //第一次扫包装盒 或者 当前包装盒装满的情况下
@@ -197,14 +197,46 @@
         private function login():void {
             var login:Login = new Login();
             login.addEventListener("login", function (event:LoginEvent):void {
-                scanBath = event.scanBath;
-                currentCase = null;
-                loadCaseList();
-                PopUpManager.removePopUp(login);
-                scanItemInput.setFocus();
+                RemoteObjectUtils.execute("dataService", "createBatch", function (success:Boolean, data:Object) {
+                            if (success) {
+                                scanBath = data as ScanBatch;
+                                currentCase = null;
+                                loadCaseList();
+                                PopUpManager.removePopUp(login);
+                                scanItemInput.setFocus();
+                                startTimerBatch();
+                            } else {
+                                Alert.show(data.message, '错误');
+                            }
+                        },
+                        cookie);
             })
             PopUpManager.addPopUp(login, this, true);
             PopUpManager.centerPopUp(login);
+        }
+
+        // 每5分钟保持session状态
+        private var batchTimer:Timer = new Timer(1000 * 60 * 5, 0);
+
+        private function startTimerBatch():void {
+            if (!batchTimer.hasEventListener(TimerEvent.TIMER)) {
+                batchTimer.addEventListener(TimerEvent.TIMER, keepSession);
+            }
+            batchTimer.start();
+        }
+
+        private function stopTimerBatch():void {
+            if (batchTimer.running) {
+                batchTimer.stop();
+            }
+        }
+
+        private function keepSession(event:TimerEvent):void {
+            if (!cookie) {
+                stopTimerBatch();
+                return;
+            }
+            RemoteObjectUtils.execute("amazonService", "getRunInfo", null, cookie);
         }
 
         // 刷新包装列表
@@ -291,20 +323,19 @@
             var df:DateFormatter = new DateFormatter();
             df.formatString = "YYYY-MM-DD JJ:NN:SS";
             var _lb:String = "";
-            if(data.requestStatus){
+            if (data.requestStatus) {
                 _lb += data.requestStatus;
                 _lb += ' ';
             }
-            if(data.submitTime){
+            if (data.submitTime) {
                 _lb += df.format(data.submitTime);
                 _lb += ' ';
             }
-            if(data.failureReason){
+            if (data.failureReason) {
                 _lb += data.failureReason;
             }
             return _lb;
         }
-
         ]]>
     </fx:Script>
 
@@ -379,8 +410,10 @@
                              itemClick="caseGrid_itemClickHandler(event)">
                     <mx:columns>
                         <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="已包装数" dataField="count" width="80"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus" labelFunction="submitLabelFun"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="已包装数" dataField="count"
+                                           width="80"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
+                                           labelFunction="submitLabelFun"></mx:DataGridColumn>
 
                     </mx:columns>
                 </mx:DataGrid>
@@ -389,7 +422,8 @@
                 <mx:DataGrid id="unitGrid" width="100%" height="100%" dataProvider="{unitList}" fontSize="14">
                     <mx:columns>
                         <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus" labelFunction="submitLabelFun"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
+                                           labelFunction="submitLabelFun"></mx:DataGridColumn>
                     </mx:columns>
                 </mx:DataGrid>
             </mx:Panel>

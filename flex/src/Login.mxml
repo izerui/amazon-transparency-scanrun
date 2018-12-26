@@ -23,25 +23,13 @@
         import mx.core.Application;
         import mx.managers.PopUpManager;
 
-        import utils.RemoteObjectUtils;
-
-        import vo.ScanBatch;
-
         private function setCookie():void {
             if (!cookieArea.text) {
                 Alert.show("请输入COOKIE!");
                 return;
             }
-            var outDocument:Login = this;
-            RemoteObjectUtils.execute("dataService", "createBatch", function (success:Boolean, data:Object) {
-                        if (success) {
-                            var event:LoginEvent = new LoginEvent(data as ScanBatch);
-                            dispatchEvent(event);
-                        } else {
-                            Alert.show(data.message, '错误');
-                        }
-                    },
-                    Application.application.cookie);
+            var event:LoginEvent = new LoginEvent();
+            dispatchEvent(event);
         }
 
         private function init():void {
