@@ -34,8 +34,12 @@ public class ScanBatch {
     private Integer unitsPerCase; //一个包装内单位数量
     private Integer expectedCaseCount;//预期包装数量
     private Integer expectedCount;//预期单位数量
+    @Column(length = 128)
     private String unitLabelRegExPattern; // 单位正则
+    @Column(length = 128)
     private String caseLabelRegExPattern; // 包装正则
+    @Column(length = 128)
+    private String tempCaseToken;
 
 
     public Long getId() {
@@ -140,5 +144,13 @@ public class ScanBatch {
 
     public void setCaseLabelRegExPattern(String caseLabelRegExPattern) {
         this.caseLabelRegExPattern = caseLabelRegExPattern;
+    }
+
+    public String getTempCaseToken() {
+        return tempCaseToken;
+    }
+
+    public void setTempCaseToken(String tempCaseToken) {
+        this.tempCaseToken = tempCaseToken;
     }
 }

@@ -15,5 +15,6 @@ public class ScanBatch {
     public var expectedCount:Number;//预期单位数量
     public var unitLabelRegExPattern:String; // 单位正则
     public var caseLabelRegExPattern:String; // 包装正则
+    public var tempCaseToken:String; //
 }
 }

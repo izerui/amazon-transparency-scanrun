@@ -56,6 +56,7 @@ public class DataService {
         String expectedCount = (String) runInfo.get("expectedCount");
         String unitLabelRegExPattern = (String) runInfo.get("unitLabelRegExPattern");
         String caseLabelRegExPattern = (String) runInfo.get("caseLabelRegExPattern");
+        String tempCaseToken = (String) runInfo.get("tempCaseToken");
 
         Conditions conditions = Conditions
                 .where("manufacturerLot").is(manufacturerLot)
@@ -78,6 +79,7 @@ public class DataService {
         batch.setExpectedCount(Integer.valueOf(expectedCount));
         batch.setUnitLabelRegExPattern(unitLabelRegExPattern);
         batch.setCaseLabelRegExPattern(caseLabelRegExPattern);
+        batch.setTempCaseToken(tempCaseToken);
         scanBatchDao.save(batch);
         return batch;
     }
@@ -169,7 +171,7 @@ public class DataService {
             caseRequest.setCaseItemId("");
             caseRequest.setParent(true);
             caseRequest.setRunId(batch.getRunId());
-            caseRequest.setActive(false);
+            caseRequest.setActive(true);
             caseRequest.setTempCaseToken("empty");
 
             requestList = new ArrayList<>();
@@ -182,8 +184,8 @@ public class DataService {
                 itemRequest.setCaseItemId(scanCase.getItemId());
                 itemRequest.setParent(false);
                 itemRequest.setRunId(batch.getRunId());
-                itemRequest.setActive(false);
-                itemRequest.setTempCaseToken("empty");
+                itemRequest.setActive(true);
+                itemRequest.setTempCaseToken(batch.getTempCaseToken());
                 requestList.add(itemRequest);
             }
             ScanResult scanResult = amazonService.scanItems(cookie, requestList);
