@@ -258,7 +258,7 @@
             AlertShow.operateConfirm("确认提交该批次数据?", "提交数据", this, function ():void {
                 RemoteObjectUtils.execute("dataService", "submitScan", function (success:Boolean, data:Object) {
                             if (success) {
-                                Alert.show("提交数据成功", "成功");
+                                Alert.show("已成功提交数据到亚马逊Transparency系统", "成功");
                                 selectedBox.selected = true;
                                 loadCaseList();
                             } else {
