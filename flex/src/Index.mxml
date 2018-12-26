@@ -198,7 +198,7 @@
         private function login():void {
             var login:Login = new Login();
             login.addEventListener("login", function (event:LoginEvent):void {
-                if(cookie){
+                if (cookie) {
                     RemoteObjectUtils.execute("dataService", "createBatch", function (success:Boolean, data:Object) {
                                 if (success) {
                                     scanBath = data as ScanBatch;
@@ -339,6 +339,12 @@
             }
             return _lb;
         }
+
+        private function button1_clickHandler(event:MouseEvent):void {
+            var ccc:Cookie = new Cookie();
+            PopUpManager.addPopUp(ccc, this, true);
+            PopUpManager.centerPopUp(ccc);
+        }
         ]]>
     </fx:Script>
 
@@ -360,6 +366,7 @@
                         <mx:Button label="提交数据" click="submitData(event)"></mx:Button>
                         <mx:CheckBox selected="false" id="selectedBox" label="显示已完成数据"
                                      change="selectedBox_changeHandler(event)"></mx:CheckBox>
+                        <!--<mx:Button label="验证cookie" click="button1_clickHandler(event)"></mx:Button>-->
                     </mx:HBox>
                 </mx:FormItem>
                 <mx:FormItem label="商品:">

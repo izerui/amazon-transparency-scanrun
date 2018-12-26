@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/mx"
+                title="验证cookie"
+                width="1024"
+                height="900"
+                horizontalAlign="center"
+                showCloseButton="true"
+                close="{PopUpManager.removePopUp(this)}"
+                layout="vertical"
+                verticalAlign="top">
+
+    <mx:Form>
+        <mx:FormItem label="url:">
+            <mx:HBox width="100%">
+                <mx:TextInput id="urlInput" width="800"></mx:TextInput>
+                <s:Button id="button" fontWeight="bold" click="button_clickHandler(event)" label="验证"/>
+            </mx:HBox>
+        </mx:FormItem>
+        <mx:FormItem label="cookie:">
+            <mx:TextInput id="cookieInput" width="800"></mx:TextInput>
+        </mx:FormItem>
+        <mx:FormItem label="response:">
+            <mx:TextArea id="responseArea" width="800" height="500"></mx:TextArea>
+        </mx:FormItem>
+    </mx:Form>
+
+    <fx:Script><![CDATA[
+        import mx.managers.PopUpManager;
+
+        import utils.RemoteObjectUtils;
+
+        private function button_clickHandler(event:MouseEvent):void {
+            RemoteObjectUtils.execute("amazonService", "validateCookie", function (success:Boolean, data:Object) {
+                        if (success) {
+                            responseArea.text = data as String;
+                        } else {
+                            responseArea.text = data.message;
+                        }
+                    },
+                    cookieInput.text,
+                    urlInput.text
+            );
+        }
+        ]]></fx:Script>
+</mx:TitleWindow>

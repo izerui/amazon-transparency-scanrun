@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,10 +31,25 @@ public class AmazonService {
     ObjectMapper objectMapper;
 
 
+    public String validateCookie(String cookie,String url) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url,String.class);
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .header("cookie", cookie)
+//                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
+//                .get().build();
+//        Response response = okHttpClient.newCall(request).execute();
+//        String body = response.body().string();
+//        return body;
+    }
+
+
     public Map<String, Object> getRunInfo(String cookie) throws IOException {
         Request request = new Request.Builder()
                 .url("https://www.amazon.com/authenticity/scanrun/v2?")
                 .header("cookie", cookie)
+                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                 .get().build();
         Response response = okHttpClient.newCall(request).execute();
         String body = response.body().string();
@@ -79,6 +95,7 @@ public class AmazonService {
         Request request = new Request.Builder()
                 .url("https://www.amazon.com/authenticity/scanitems")
                 .header("cookie", cookie)
+                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                 .post(
                         RequestBody.create(JSON_TYPE, JMap.create("scanItemRequestList", scanItemList).writeToBytes(objectMapper))
                 ).build();
@@ -108,6 +125,7 @@ public class AmazonService {
         Request request = new Request.Builder()
                 .url("https://www.amazon.com/authenticity/cancelscanrun")
                 .header("cookie", cookie)
+                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                 .put(
                         RequestBody.create(JSON_TYPE, JMap.create("runId", runId).writeToBytes(objectMapper))
                 ).build();
@@ -127,6 +145,7 @@ public class AmazonService {
         Request request = new Request.Builder()
                 .url("https://www.amazon.com/authenticity/completescanrun")
                 .header("cookie", cookie)
+                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                 .put(
                         RequestBody.create(JSON_TYPE, JMap.create("runId", runId).writeToBytes(objectMapper))
                 ).build();

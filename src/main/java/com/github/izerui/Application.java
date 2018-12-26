@@ -26,7 +26,7 @@ public class Application implements CommandLineRunner {
     public OkHttpClient okHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor(s -> System.out.println(s)).setLevel(HttpLoggingInterceptor.Level.BODY))
-                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
+//                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
                 .build();
     }
 
