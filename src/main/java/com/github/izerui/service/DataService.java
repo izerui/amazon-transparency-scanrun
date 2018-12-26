@@ -192,7 +192,7 @@ public class DataService {
                 requestList.add(itemRequest);
             }
             ScanResult scanResult = amazonService.scanItems(cookie, requestList);
-            // TODO 这里完成runId 确认提交后
+            amazonService.completeScan(cookie,batch.getRunId());
 
             for (ScanItemResult itemResult : scanResult.getScanItemResultList()) {
                 if (itemResult.getScanItemId().equals(scanCase.getItemId())) {

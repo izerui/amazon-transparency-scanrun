@@ -123,4 +123,22 @@ public class AmazonService {
         }
     }
 
+    public void completeScan(String cookie, String runId) throws IOException {
+        Request request = new Request.Builder()
+                .url("https://www.amazon.com/authenticity/completescanrun")
+                .header("cookie", cookie)
+                .put(
+                        RequestBody.create(JSON_TYPE, JMap.create("runId", runId).writeToBytes(objectMapper))
+                ).build();
+        Response response = okHttpClient.newCall(request).execute();
+        if (response.isSuccessful()) {
+            JsonNode jsonNode = objectMapper.readValue(response.body().string(), JsonNode.class);
+            boolean successful = jsonNode.path("successful").asBoolean();
+            if (!successful) {
+                throw new RuntimeException(jsonNode.path("errorCode").asText());
+            }
+        } else {
+            throw new RuntimeException("请求失败");
+        }
+    }
 }
