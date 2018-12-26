@@ -282,17 +282,22 @@
             loadCaseList();
         }
 
-        private function submitLabelFun(data:ScanCase, column:DataGridColumn):String {
+        private function submitLabelFun(data:Object, column:DataGridColumn):String {
             var df:DateFormatter = new DateFormatter();
             df.formatString = "YYYY-MM-DD JJ:NN:SS";
-            return data.requestStatus + ' ' + df.format(data.submitTime) + ' ' + data.failureReason;
+            var _lb:String = "";
+            if(data.requestStatus){
+                _lb += data.requestStatus;
+            }
+            if(data.submitTime){
+                _lb += df.format(data.submitTime);
+            }
+            if(data.failureReason){
+                _lb += data.failureReason;
+            }
+            return _lb;
         }
 
-        private function unitSubmitLabelFun(data:Object, column:DataGridColumn):String {
-            var df:DateFormatter = new DateFormatter();
-            df.formatString = "YYYY-MM-DD JJ:NN:SS";
-            return data.requestStatus + ' ' + df.format(data.submitTime) + ' ' + data.failureReason;
-        }
         ]]>
     </fx:Script>
 
@@ -382,7 +387,7 @@
                         <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId"
                                            width="400"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
-                                           labelFunction="unitSubmitLabelFun"></mx:DataGridColumn>
+                                           labelFunction="submitLabelFun"></mx:DataGridColumn>
                     </mx:columns>
                 </mx:DataGrid>
             </mx:Panel>
