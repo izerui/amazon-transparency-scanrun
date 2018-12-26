@@ -197,7 +197,6 @@
         private function login():void {
             var login:Login = new Login();
             login.addEventListener("login", function (event:LoginEvent):void {
-                scanItemInput.setFocus();
                 if(cookie){
                     RemoteObjectUtils.execute("dataService", "createBatch", function (success:Boolean, data:Object) {
                                 if (success) {
