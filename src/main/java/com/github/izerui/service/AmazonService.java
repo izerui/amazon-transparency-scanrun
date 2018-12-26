@@ -32,16 +32,14 @@ public class AmazonService {
 
 
     public String validateCookie(String cookie,String url) throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url,String.class);
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .header("cookie", cookie)
-//                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
-//                .get().build();
-//        Response response = okHttpClient.newCall(request).execute();
-//        String body = response.body().string();
-//        return body;
+        Request request = new Request.Builder()
+                .url(url)
+                .header("cookie", cookie)
+                .header("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
+                .get().build();
+        Response response = okHttpClient.newCall(request).execute();
+        String body = response.body().string();
+        return body;
     }
 
 
