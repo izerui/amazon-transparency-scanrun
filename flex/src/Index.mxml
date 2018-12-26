@@ -106,7 +106,8 @@
         //扫描添加
         private function scan(itemId:String):void {
             if (!scanBath.runId) {
-                login();
+                Alert.show("请登录亚马逊新创建一个货柜,并获取cookie!");
+                return;
             }
             //第一次扫包装盒 或者 当前包装盒装满的情况下
             if (currentCase == null || currentCase.count >= unitsPerCase) {
