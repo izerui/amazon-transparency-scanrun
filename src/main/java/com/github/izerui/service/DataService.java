@@ -90,7 +90,6 @@ public class DataService {
                 .and("itemId").is(itemId);
         Assert.state(scanCaseDao.count(conditions) == 0, "包装 " + itemId + " 已扫描过");
         Assert.state(scanItemDao.count(conditions) == 0, itemId + " 已经在同批次货品中使用过");
-        //TODO 包装 itemId 已经在同批次货品中使用过
         ScanCase one = new ScanCase();
         one.setBatchId(batchId);
         one.setItemId(itemId);
