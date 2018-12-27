@@ -15,8 +15,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.File;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 
 @SpringBootApplication
 @EnableTransactionManagement(proxyTargetClass = true)
@@ -30,7 +28,7 @@ public class Application implements CommandLineRunner {
     public OkHttpClient okHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor(s -> logger.info(s)).setLevel(HttpLoggingInterceptor.Level.BODY))
-                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
+//                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
                 .build();
     }
 
