@@ -362,6 +362,8 @@
                         scanBath.batchId,
                         caseGrid.selectedItem.itemId
                 );
+            }, function ():void {
+                scanItemInput.setFocus();
             });
         }
         ]]>
