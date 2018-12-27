@@ -12,9 +12,9 @@
 
     <mx:ControlBar>
         <mx:Spacer width="100%"></mx:Spacer>
+        <s:Button id="button" fontWeight="bold" click="setCookie()" label="确定"/>
         <s:Button id="buttonCancel" fontWeight="bold"
                   click="PopUpManager.removePopUp(this);" label="取消"/>
-        <s:Button id="button" fontWeight="bold" click="setCookie()" label="确定"/>
     </mx:ControlBar>
 
     <fx:Script><![CDATA[

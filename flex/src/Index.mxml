@@ -345,6 +345,25 @@
             PopUpManager.addPopUp(ccc, this, true);
             PopUpManager.centerPopUp(ccc);
         }
+
+        private function button2_clickHandler(event:MouseEvent):void {
+            if (caseGrid.selectedIndex == -1) {
+                scanItemInput.setFocus();
+                return;
+            }
+            AlertShow.operateConfirm("删除选择的包装?", "删除", this, function ():void {
+                RemoteObjectUtils.execute("dataService", "deleteCase", function (success:Boolean, data:Object) {
+                            if (success) {
+                                reset(true, "成功删除包装 " + caseGrid.selectedItem.itemId)
+                            }
+                            scanItemInput.setFocus();
+                            loadCaseList();
+                        },
+                        scanBath.batchId,
+                        caseGrid.selectedItem.itemId
+                );
+            });
+        }
         ]]>
     </fx:Script>
 
@@ -389,7 +408,11 @@
                                   keyDown="scanItemInput_keyDownHandler(event)"></mx:TextInput>
                 </mx:FormItem>
                 <mx:FormItem label="当前包装:" enabled="{!selectedBox.selected}">
-                    <mx:Text fontSize="20" fontWeight="bold" text="{currentCase.itemId}"></mx:Text>
+                    <mx:HBox width="100%">
+                        <mx:Text fontSize="20" fontWeight="bold" text="{currentCase.itemId}"></mx:Text>
+                        <mx:Button label="删除包装" click="button2_clickHandler(event)"
+                                   visible="{!selectedBox.selected}"></mx:Button>
+                    </mx:HBox>
                 </mx:FormItem>
                 <mx:FormItem label="信息:" enabled="{!selectedBox.selected}">
                     <mx:Text fontSize="20" fontWeight="bold" color="red" id="errMsgText"></mx:Text>
@@ -420,11 +443,11 @@
                              itemClick="caseGrid_itemClickHandler(event)">
                     <mx:columns>
                         <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="已包装数" dataField="count"
+                        <mx:DataGridColumn sortable="false" fontSize="16" fontWeight="bold" headerText="已包装数"
+                                           dataField="count"
                                            width="80"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
                                            labelFunction="submitLabelFun"></mx:DataGridColumn>
-
                     </mx:columns>
                 </mx:DataGrid>
             </mx:Panel>

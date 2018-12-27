@@ -122,13 +122,6 @@ public class DataService {
         scanItemDao.save(one);
     }
 
-    public void deleteCase(String batchId, String itemId) {
-        Conditions conditions = Conditions
-                .where("batchId").is(batchId)
-                .and("itemId").is(itemId);
-    }
-
-
     /**
      * 查询包装列表
      *
@@ -214,6 +207,33 @@ public class DataService {
             }
         }
         amazonService.completeScan(cookie, batch.getRunId());
+    }
+
+    public void deleteCase(String batchId, String itemId) {
+        ScanCase one = scanCaseDao.findOne(
+                Conditions
+                        .where("batchId").is(batchId)
+                        .and("itemId").is(itemId)
+        );
+        Assert.notNull(one, "不存在的包装 " + itemId);
+        scanCaseDao.delete(one);
+        scanItemDao.deleteAll(
+                Conditions
+                        .where("batchId").is(batchId)
+                        .and("caseItemId").is(itemId)
+
+        );
+    }
+
+
+    public void deleteItem(String batchId, String itemId) {
+        ScanItem one = scanItemDao.findOne(
+                Conditions
+                        .where("batchId").is(batchId)
+                        .and("itemId").is(itemId)
+        );
+        Assert.notNull(one, "不存在的货品 " + itemId);
+        scanItemDao.delete(one);
     }
 
 }
