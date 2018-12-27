@@ -58,7 +58,8 @@ public class DataService {
         Conditions conditions = Conditions
                 .where("manufacturerLot").is(manufacturerLot)
                 .and("parentUpc").is(parentUpc)
-                .and("productTitle").is(productTitle);
+                .and("productTitle").is(productTitle)
+                .and("manufacturerReference").is(manufacturerReference);
         ScanBatch batch = scanBatchDao.findOne(conditions);
         if (batch == null) {
             batch = new ScanBatch();
@@ -66,9 +67,9 @@ public class DataService {
             batch.setManufacturerLot(manufacturerLot);
             batch.setParentUpc(parentUpc);
             batch.setAsin(asin);
+            batch.setManufacturerReference(manufacturerReference);
             batch.setBatchId(UUID.randomUUID().toString());
         }
-        batch.setManufacturerReference(manufacturerReference);
         batch.setRunId(runId);
         batch.setUnitsPerCase(Integer.valueOf(unitsPerCase));
         batch.setExpectedCaseCount(Integer.valueOf(expectedCaseCount));
