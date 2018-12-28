@@ -239,7 +239,7 @@
                 stopTimerBatch();
                 return;
             }
-            RemoteObjectUtils.execute("amazonService", "getRunInfo", null, cookie);
+            RemoteObjectUtils.execute("amazonService", "keepSession", null, cookie);
         }
 
         // 刷新包装列表
