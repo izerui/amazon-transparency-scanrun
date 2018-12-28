@@ -341,11 +341,11 @@
         }
 
         private function xuhaoLabelFun(data:Object, column:DataGridColumn):String {
-            return (caseList.length - (caseList.getItemIndex(data) + 1)) + '';
+            return (caseList.length - caseList.getItemIndex(data)) + '';
         }
 
         private function xuhao2LabelFun(data:Object, column:DataGridColumn):String {
-            return (unitList.length - (unitList.getItemIndex(data) + 1)) + '';
+            return (unitList.length - unitList.getItemIndex(data)) + '';
         }
 
         private function submitLabelFun(data:Object, column:DataGridColumn):String {
