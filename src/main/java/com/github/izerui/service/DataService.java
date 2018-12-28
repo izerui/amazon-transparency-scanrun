@@ -10,6 +10,8 @@ import com.github.izerui.jpa.impl.Conditions;
 import com.github.izerui.pojo.ScanItemRequest;
 import com.github.izerui.pojo.ScanItemResult;
 import com.github.izerui.pojo.ScanResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -24,6 +26,9 @@ import java.util.*;
 @Service
 @Transactional
 public class DataService {
+
+    private Logger logger = LoggerFactory.getLogger(DataService.class);
+
     @Autowired
     private AmazonService amazonService;
     @Autowired
@@ -86,6 +91,7 @@ public class DataService {
      * 扫描包装
      */
     public void saveCase(String batchId, String itemId) {
+        logger.info("本次扫描 批次: {} 包装: {}", batchId, itemId);
         Conditions conditions = Conditions
                 .where("batchId").is(batchId)
                 .and("itemId").is(itemId);
@@ -103,6 +109,7 @@ public class DataService {
      * 扫描单位
      */
     public void saveItem(String batchId, String caseItemId, String itemId) {
+        logger.info("本次扫描 批次: {} 单位: {}", batchId, itemId);
         Conditions conditions = Conditions
                 .where("batchId").is(batchId)
                 .and("itemId").is(itemId);
