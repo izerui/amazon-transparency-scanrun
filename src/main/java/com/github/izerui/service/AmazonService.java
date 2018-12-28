@@ -6,8 +6,10 @@ import com.github.izerui.pojo.ScanItemRequest;
 import com.github.izerui.pojo.ScanResult;
 import com.github.izerui.support.JMap;
 import okhttp3.*;
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -42,13 +44,23 @@ public class AmazonService {
     }
 
 
-    public void keepSession(String cookie) throws IOException {
+    public String keepSession(String cookie) throws IOException {
         Request request = new Request.Builder()
-                .url("https://www.amazon.com/")
+                .url("https://www.amazon.com/gp/css/order-history/ref=nav_youraccount_orders")
                 .header("cookie", cookie)
                 .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                 .get().build();
-        okHttpClient.newCall(request).execute();
+        Response response = okHttpClient.newCall(request).execute();
+        String body = response.body().string();
+        Document document = Jsoup.parse(body);
+
+        Elements form = document.getElementsByTag("form");
+        if (form.get(0) != null && form.get(0).attr("name").equals("signIn")) {
+            return "状态更新失败,用户已登出";
+        } else {
+            Element element = document.getElementById("nav-link-accountList");
+            return element.getElementsByIndexEquals(0).get(0).text() + " 状态已更新: " + DateTime.now().toString("yyyy-MM-dd HH:mm:ss");
+        }
     }
 
 

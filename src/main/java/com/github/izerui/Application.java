@@ -10,11 +10,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.system.ApplicationPid;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.File;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 @SpringBootApplication
 @EnableTransactionManagement(proxyTargetClass = true)
@@ -24,8 +27,18 @@ public class Application implements CommandLineRunner {
 
     private Logger logger = LoggerFactory.getLogger(Application.class);
 
+    @Profile("dev")
     @Bean
-    public OkHttpClient okHttpClient() {
+    public OkHttpClient devOkHttpClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor(s -> logger.info(s)).setLevel(HttpLoggingInterceptor.Level.BODY))
+                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
+                .build();
+    }
+
+    @Profile("prod")
+    @Bean
+    public OkHttpClient prodOkHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor(s -> logger.info(s)).setLevel(HttpLoggingInterceptor.Level.BODY))
 //                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))

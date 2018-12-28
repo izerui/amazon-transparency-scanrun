@@ -37,12 +37,23 @@
 
 
         [Bindable]
+        public var sessionKeepLabel:String = "";
+
+        // 每5分钟保持session状态 1000 * 60 * 5
+        // 每1秒钟保持session状态 1000
+
+        private var sessionKeeperMils:Number = 1000 * 60 * 5;
+
+
+        [Bindable]
         public var cookie:String;
         [Bindable]
         public var scanBath:ScanBatch;
 
         public var _unitList:ArrayCollection = new ArrayCollection();
         public var _caseList:ArrayCollection = new ArrayCollection();
+
+        private var df:DateFormatter = new DateFormatter("YYYY-MM-DD JJ:NN:SS");
 
         [Bindable]
         public var currentCase:ScanCase;
@@ -219,13 +230,14 @@
         }
 
         // 每5分钟保持session状态
-        private var batchTimer:Timer = new Timer(1000 * 60 * 5, 0);
+        private var batchTimer:Timer = new Timer(sessionKeeperMils, 0);
 
         private function startTimerBatch():void {
             if (!batchTimer.hasEventListener(TimerEvent.TIMER)) {
                 batchTimer.addEventListener(TimerEvent.TIMER, keepSession);
             }
             batchTimer.start();
+            keepSession(null);
         }
 
         private function stopTimerBatch():void {
@@ -239,7 +251,13 @@
                 stopTimerBatch();
                 return;
             }
-            RemoteObjectUtils.execute("amazonService", "keepSession", null, cookie);
+            RemoteObjectUtils.execute("amazonService", "keepSession", function (success:Boolean, data:Object):void {
+                if (success) {
+                    sessionKeepLabel = data as String;
+                } else {
+                    sessionKeepLabel = "请检查网络...";
+                }
+            }, cookie);
         }
 
         // 刷新包装列表
@@ -322,9 +340,15 @@
             loadCaseList();
         }
 
+        private function xuhaoLabelFun(data:Object, column:DataGridColumn):String {
+            return (caseList.getItemIndex(data) + 1) + '';
+        }
+
+        private function xuhao2LabelFun(data:Object, column:DataGridColumn):String {
+            return (unitList.getItemIndex(data) + 1) + '';
+        }
+
         private function submitLabelFun(data:Object, column:DataGridColumn):String {
-            var df:DateFormatter = new DateFormatter();
-            df.formatString = "YYYY-MM-DD JJ:NN:SS";
             var _lb:String = "";
             if (data.requestStatus) {
                 _lb += data.requestStatus;
@@ -369,7 +393,7 @@
         ]]>
     </fx:Script>
 
-    <mx:Panel title="SourceMark v2"
+    <mx:Panel title="SourceMark v2    {sessionKeepLabel}"
               width="100%"
               height="100%"
               paddingLeft="10"
@@ -444,10 +468,12 @@
                 <mx:DataGrid id="caseGrid" width="100%" height="100%" dataProvider="{caseList}" fontSize="14"
                              itemClick="caseGrid_itemClickHandler(event)">
                     <mx:columns>
-                        <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
+                                           labelFunction="xuhaoLabelFun"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId" width="350"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" fontSize="16" fontWeight="bold" headerText="已包装数"
                                            dataField="count"
-                                           width="80"></mx:DataGridColumn>
+                                           width="100"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
                                            labelFunction="submitLabelFun"></mx:DataGridColumn>
                     </mx:columns>
@@ -456,7 +482,9 @@
             <mx:Panel width="100%" height="100%" title="已扫描单位列表">
                 <mx:DataGrid id="unitGrid" width="100%" height="100%" dataProvider="{unitList}" fontSize="14">
                     <mx:columns>
-                        <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
+                                           labelFunction="xuhao2LabelFun"></mx:DataGridColumn>
+                        <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId" width="400"></mx:DataGridColumn>
                         <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
                                            labelFunction="submitLabelFun"></mx:DataGridColumn>
                     </mx:columns>
