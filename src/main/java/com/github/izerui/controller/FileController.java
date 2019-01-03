@@ -66,7 +66,7 @@ public class FileController {
                     sb.append(",");
                     sb.append(trimToEmpty(scanDate));
                     sb.append(",");
-                    sb.append(trimToEmpty(batch.getVendorCode()));
+                    sb.append("ZAGG");
                     sb.append(",");
                     sb.append("China");
                     sb.append(",");
@@ -92,7 +92,7 @@ public class FileController {
                 sb.append(",");
                 sb.append(trimToEmpty(scanDate));
                 sb.append(",");
-                sb.append(trimToEmpty(batch.getVendorCode()));
+                sb.append("ZAGG");
                 sb.append(",");
                 sb.append("China");
                 sb.append(",");
