@@ -16,7 +16,6 @@ public class ScanBatch {
     public var unitLabelRegExPattern:String; // 单位正则
     public var caseLabelRegExPattern:String; // 包装正则
     public var tempCaseToken:String; //
-    public var container:String;
     public var vendorCode:String;
 
     public var beginTime:Date;
@@ -24,6 +23,16 @@ public class ScanBatch {
 
     public var caseCount:Number;
     public var unitCount:Number;
+
+    public var upc:String;
+
+    public var unitStringId:String;
+
+    public var caseStringId:String;
+
+    public var internalId:String;
+
+    public var gtin:String;
 
 }
 }

@@ -5,11 +5,12 @@
             <mx:DataGridColumn headerText="商品" dataField="productTitle"></mx:DataGridColumn>
             <mx:DataGridColumn headerText="asin" dataField="asin"></mx:DataGridColumn>
             <mx:DataGridColumn headerText="批次编号" dataField="manufacturerLot"></mx:DataGridColumn>
-            <mx:DataGridColumn headerText="包装箱UPC/GTIN" dataField="parentUpc"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="UPC" dataField="upc"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="GTIN" dataField="parentUpc"></mx:DataGridColumn>
             <mx:DataGridColumn width="300" headerText="起止时间" dataField="beginTime"
                                labelFunction="beginEndTimeLabelFun"></mx:DataGridColumn>
-            <mx:DataGridColumn headerText="包装ID正则" dataField="caseLabelRegExPattern"></mx:DataGridColumn>
-            <mx:DataGridColumn headerText="单位ID正则" dataField="unitLabelRegExPattern"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="包装" dataField="caseStringId"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="单位" dataField="unitStringId"></mx:DataGridColumn>
             <mx:DataGridColumn headerText="备注" dataField="manufacturerReference"></mx:DataGridColumn>
             <mx:DataGridColumn headerText="包装总数" dataField="caseCount"></mx:DataGridColumn>
             <mx:DataGridColumn headerText="单位总数" dataField="unitCount"></mx:DataGridColumn>

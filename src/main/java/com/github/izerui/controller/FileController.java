@@ -58,7 +58,7 @@ public class FileController {
                     sb.append(",");
                     sb.append(trimToEmpty(it.getItemId()));
                     sb.append(",");
-                    sb.append(trimToEmpty(batch.getParentUpc()));
+                    sb.append(trimToEmpty(batch.getUpc()));
                     sb.append(",");
                     sb.append(trimToEmpty(batch.getAsin()));
                     sb.append(",");
@@ -84,7 +84,7 @@ public class FileController {
                 sb.append(",");
                 sb.append(trimToEmpty(s));
                 sb.append(",");
-                sb.append(trimToEmpty(batch.getParentUpc()));
+                sb.append(trimToEmpty(batch.getUpc()));
                 sb.append(",");
                 sb.append(trimToEmpty(batch.getAsin()));
                 sb.append(",");
@@ -115,7 +115,7 @@ public class FileController {
 
         byte[] bytes = outputStream.toByteArray();
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "ScanRunItems_"+batch.getManufacturerLot()+"_"+batch.getAsin()+"_"+DateTime.now().toString("yyyyMMdd") + ".csv");
+        headers.setContentDispositionFormData("attachment", "ScanRunItems_"+batch.getManufacturerLot()+"_"+batch.getAsin()+"_"+batch.getCaseStringId()+"_"+batch.getUnitStringId()+"_"+DateTime.now().toString("yyyyMMdd") + ".csv");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentLength(bytes.length);
         return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.CREATED);

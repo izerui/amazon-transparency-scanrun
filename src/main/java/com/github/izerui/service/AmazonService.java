@@ -2,6 +2,7 @@ package com.github.izerui.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.izerui.pojo.Product;
 import com.github.izerui.pojo.ScanItemRequest;
 import com.github.izerui.pojo.ScanResult;
 import com.github.izerui.support.JMap;
@@ -41,6 +42,32 @@ public class AmazonService {
         Response response = okHttpClient.newCall(request).execute();
         String body = response.body().string();
         return body;
+    }
+
+
+    /**
+     * 获取产品信息
+     *
+     * @param cookie
+     * @param gtin
+     * @return
+     * @throws IOException
+     */
+    public Product getProductlist(String cookie, String gtin) throws IOException {
+        Request request = new Request.Builder()
+                .url("https://www.amazon.com/authenticity/getproductlist")
+                .header("cookie", cookie)
+                .put(
+                        RequestBody.create(JSON_TYPE, JMap.create("gtin", gtin).writeToBytes(objectMapper))
+                ).build();
+        Response response = okHttpClient.newCall(request).execute();
+        JsonNode jsonNode = objectMapper.readValue(response.body().string(), JsonNode.class);
+        boolean successful = jsonNode.path("successful").asBoolean();
+        if (successful) {
+            return objectMapper.readValue(jsonNode.path("data").toString(), Product.class);
+        } else {
+            throw new RuntimeException(jsonNode.path("errorCode").asText());
+        }
     }
 
 

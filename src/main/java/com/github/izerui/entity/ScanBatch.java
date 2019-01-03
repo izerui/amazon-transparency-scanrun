@@ -42,14 +42,27 @@ public class ScanBatch {
     @Column(length = 128)
     private String tempCaseToken;
     @Column(length = 128)
-    private String container;
-    @Column(length = 128)
     private String vendorCode;
 
     @Transient
     private Date beginTime;
     @Transient
     private Date endTime;
+
+    @Column(length = 128)
+    private String upc;
+
+    @Column(length = 128)
+    private String unitStringId;
+
+    @Column(length = 128)
+    private String caseStringId;
+
+    @Column(length = 128)
+    private String internalId;
+
+    @Column(length = 128)
+    private String gtin;
 
     @Transient
     private Long caseCount;
@@ -169,14 +182,6 @@ public class ScanBatch {
         this.tempCaseToken = tempCaseToken;
     }
 
-    public String getContainer() {
-        return container;
-    }
-
-    public void setContainer(String container) {
-        this.container = container;
-    }
-
     public String getVendorCode() {
         return vendorCode;
     }
@@ -215,5 +220,45 @@ public class ScanBatch {
 
     public void setUnitCount(Long unitCount) {
         this.unitCount = unitCount;
+    }
+
+    public String getUpc() {
+        return upc;
+    }
+
+    public void setUpc(String upc) {
+        this.upc = upc;
+    }
+
+    public String getUnitStringId() {
+        return unitStringId;
+    }
+
+    public void setUnitStringId(String unitStringId) {
+        this.unitStringId = unitStringId;
+    }
+
+    public String getCaseStringId() {
+        return caseStringId;
+    }
+
+    public void setCaseStringId(String caseStringId) {
+        this.caseStringId = caseStringId;
+    }
+
+    public String getInternalId() {
+        return internalId;
+    }
+
+    public void setInternalId(String internalId) {
+        this.internalId = internalId;
+    }
+
+    public String getGtin() {
+        return gtin;
+    }
+
+    public void setGtin(String gtin) {
+        this.gtin = gtin;
     }
 }

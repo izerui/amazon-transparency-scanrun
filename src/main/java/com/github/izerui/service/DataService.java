@@ -37,6 +37,8 @@ public class DataService {
     private ScanCaseDao scanCaseDao;
     @Autowired
     private ScanItemDao scanItemDao;
+    @Autowired
+    private HistoryService historyService;
 
 
     /**
@@ -46,7 +48,9 @@ public class DataService {
      * @return
      */
     public ScanBatch createBatch(String cookie) throws IOException {
+
         Map<String, Object> runInfo = amazonService.getRunInfo(cookie);
+
         String manufacturerLot = (String) runInfo.get("manufacturerLot");
         String parentUpc = (String) runInfo.get("parentUpc");
         String productTitle = (String) runInfo.get("productTitle");
@@ -85,6 +89,10 @@ public class DataService {
         batch.setCaseLabelRegExPattern(caseLabelRegExPattern);
         batch.setTempCaseToken(tempCaseToken);
         scanBatchDao.save(batch);
+
+        //更新批次相关的详细信息
+        historyService.updateScanBatches(cookie);
+
         return batch;
     }
 
