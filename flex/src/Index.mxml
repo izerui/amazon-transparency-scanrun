@@ -19,6 +19,7 @@
         import mx.collections.ArrayCollection;
         import mx.controls.Alert;
         import mx.core.SoundAsset;
+        import mx.events.IndexChangedEvent;
         import mx.events.ListEvent;
         import mx.formatters.DateFormatter;
         import mx.managers.PopUpManager;
@@ -390,6 +391,12 @@
                 scanItemInput.setFocus();
             });
         }
+
+        private function tabNavigator1_changeHandler(event:IndexChangedEvent):void {
+            if(event.newIndex == 0){
+                scanItemInput.setFocus();
+            }
+        }
         ]]>
     </fx:Script>
 
@@ -402,7 +409,7 @@
               horizontalAlign="center"
               verticalAlign="middle">
 
-        <mx:TabNavigator width="100%" height="100%">
+        <mx:TabNavigator width="100%" height="100%" change="tabNavigator1_changeHandler(event)">
             <mx:VBox label="当前扫描" width="100%" height="100%">
                 <mx:HBox width="100%">
                     <mx:Form width="80%">
@@ -495,9 +502,9 @@
                 </mx:HBox>
             </mx:VBox>
 
-            <!--<local:History label="扫描历史" width="100%" height="100%">-->
-<!---->
-            <!--</local:History>-->
+            <local:History label="扫描历史" width="100%" height="100%">
+
+            </local:History>
 
         </mx:TabNavigator>
 

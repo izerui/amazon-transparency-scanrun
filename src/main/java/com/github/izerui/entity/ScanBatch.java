@@ -1,6 +1,7 @@
 package com.github.izerui.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 批次
@@ -44,6 +45,16 @@ public class ScanBatch {
     private String container;
     @Column(length = 128)
     private String vendorCode;
+
+    @Transient
+    private Date beginTime;
+    @Transient
+    private Date endTime;
+
+    @Transient
+    private Long caseCount;
+    @Transient
+    private Long unitCount;
 
 
     public Long getId() {
@@ -172,5 +183,37 @@ public class ScanBatch {
 
     public void setVendorCode(String vendorCode) {
         this.vendorCode = vendorCode;
+    }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Long getCaseCount() {
+        return caseCount;
+    }
+
+    public void setCaseCount(Long caseCount) {
+        this.caseCount = caseCount;
+    }
+
+    public Long getUnitCount() {
+        return unitCount;
+    }
+
+    public void setUnitCount(Long unitCount) {
+        this.unitCount = unitCount;
     }
 }

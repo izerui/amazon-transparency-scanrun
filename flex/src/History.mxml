@@ -1,16 +1,41 @@
 <?xml version="1.0"?>
-<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init()">
-    <mx:List dataProvider="{scanBatches}" labelField="manufacturerLot" height="100%">
+<mx:Box xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init()">
+    <mx:DataGrid id="grid" dataProvider="{scanBatches}" width="100%" height="100%" fontWeight="normal" fontSize="14">
+        <mx:columns>
+            <mx:DataGridColumn headerText="商品" dataField="productTitle"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="asin" dataField="asin"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="批次编号" dataField="manufacturerLot"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="包装箱UPC/GTIN" dataField="parentUpc"></mx:DataGridColumn>
+            <mx:DataGridColumn width="300" headerText="起止时间" dataField="beginTime"
+                               labelFunction="beginEndTimeLabelFun"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="包装ID正则" dataField="caseLabelRegExPattern"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="单位ID正则" dataField="unitLabelRegExPattern"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="备注" dataField="manufacturerReference"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="包装总数" dataField="caseCount"></mx:DataGridColumn>
+            <mx:DataGridColumn headerText="单位总数" dataField="unitCount"></mx:DataGridColumn>
+        </mx:columns>
 
-    </mx:List>
+    </mx:DataGrid>
+    <mx:ControlBar>
+        <mx:LinkBar itemClick="linkBar1_itemClickHandler(event)">
+            <mx:dataProvider>
+                <fx:Object label="刷新数据"></fx:Object>
+                <fx:Object label="导出数据"></fx:Object>
+            </mx:dataProvider>
+        </mx:LinkBar>
+    </mx:ControlBar>
     <fx:Script><![CDATA[
         import mx.collections.ArrayCollection;
         import mx.controls.Alert;
+        import mx.events.ItemClickEvent;
+        import mx.formatters.DateFormatter;
 
         import utils.RemoteObjectUtils;
 
         [Bindable]
         private var scanBatches:ArrayCollection;
+
+        private var df:DateFormatter = new DateFormatter("YYYY-MM-DD JJ:NN:SS");
 
         private function init():void {
             RemoteObjectUtils.execute("historyService", "findBatches", function (success:Boolean, data:Object):void {
@@ -21,5 +46,34 @@
                 }
             })
         }
+
+        private function beginEndTimeLabelFun(data:Object, column:DataGridColumn):String {
+            var _lb:String = "";
+            _lb += df.format(data.beginTime);
+            _lb += " ~ "
+            _lb += df.format(data.endTime);
+            return _lb;
+        }
+
+        private function linkBar1_itemClickHandler(event:ItemClickEvent):void {
+            if (event.label == "刷新数据") {
+                init();
+            } else if (event.label == "导出数据") {
+                export();
+            }
+        }
+
+        private function export():void {
+            if (grid.selectedIndex == -1) {
+                Alert.show("请选择一个批次再导出", "提示");
+                return;
+            }
+
+            var url:URLRequest = new URLRequest("/export/" + grid.selectedItem.batchId);
+
+            navigateToURL(url, "_target");
+
+
+        }
         ]]></fx:Script>
-</mx:HBox>
+</mx:Box>
