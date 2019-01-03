@@ -40,6 +40,10 @@ public class ScanBatch {
     private String caseLabelRegExPattern; // 包装正则
     @Column(length = 128)
     private String tempCaseToken;
+    @Column(length = 128)
+    private String container;
+    @Column(length = 128)
+    private String vendorCode;
 
 
     public Long getId() {
@@ -152,5 +156,21 @@ public class ScanBatch {
 
     public void setTempCaseToken(String tempCaseToken) {
         this.tempCaseToken = tempCaseToken;
+    }
+
+    public String getContainer() {
+        return container;
+    }
+
+    public void setContainer(String container) {
+        this.container = container;
+    }
+
+    public String getVendorCode() {
+        return vendorCode;
+    }
+
+    public void setVendorCode(String vendorCode) {
+        this.vendorCode = vendorCode;
     }
 }

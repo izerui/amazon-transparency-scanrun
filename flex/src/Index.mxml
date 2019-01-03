@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:mx="library://ns.adobe.com/flex/mx"
-               xmlns:s="library://ns.adobe.com/flex/spark">
+               xmlns:s="library://ns.adobe.com/flex/spark" xmlns:local="*">
 
     <s:layout>
         <s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
@@ -402,95 +402,106 @@
               horizontalAlign="center"
               verticalAlign="middle">
 
-        <mx:HBox width="100%">
-            <mx:Form width="80%">
-                <mx:FormItem label="RUNID:">
-                    <mx:HBox>
-                        <mx:Text text="{scanBath.runId}"></mx:Text>
-                        <mx:Button label="获取runId" click="login()"></mx:Button>
-                        <mx:Button label="提交数据" click="submitData(event)"></mx:Button>
-                        <mx:CheckBox selected="false" id="selectedBox" label="显示已完成数据"
-                                     change="selectedBox_changeHandler(event)"></mx:CheckBox>
-                        <!--<mx:Button label="验证cookie" click="button1_clickHandler(event)"></mx:Button>-->
-                    </mx:HBox>
-                </mx:FormItem>
-                <mx:FormItem label="商品:">
-                    <mx:Text text="{scanBath.productTitle}"></mx:Text>
-                </mx:FormItem>
-                <mx:FormItem label="批次编号:">
-                    <mx:Text text="{scanBath.manufacturerLot}"></mx:Text>
-                </mx:FormItem>
-                <mx:FormItem label="ASIN:">
-                    <mx:Text text="{scanBath.asin}"></mx:Text>
-                </mx:FormItem>
-                <mx:FormItem label="备注:">
-                    <mx:Text text="{scanBath.manufacturerReference}"></mx:Text>
-                </mx:FormItem>
-                <mx:FormItem label="包装箱 UPC/GTIN:">
-                    <mx:Text text="{scanBath.parentUpc}"></mx:Text>
-                </mx:FormItem>
-                <mx:FormItem label="扫描条码:" enabled="{!selectedBox.selected}">
-                    <mx:TextInput fontSize="25" height="40" id="scanItemInput" minWidth="350" text="{keyString}"
-                                  keyDown="scanItemInput_keyDownHandler(event)"></mx:TextInput>
-                </mx:FormItem>
-                <mx:FormItem label="当前包装:" enabled="{!selectedBox.selected}">
-                    <mx:HBox width="100%">
-                        <mx:Text fontSize="20" fontWeight="bold" text="{currentCase.itemId}"></mx:Text>
-                        <mx:Button label="删除包装" click="button2_clickHandler(event)"
-                                   visible="{!selectedBox.selected}"></mx:Button>
-                    </mx:HBox>
-                </mx:FormItem>
-                <mx:FormItem label="信息:" enabled="{!selectedBox.selected}">
-                    <mx:Text fontSize="20" fontWeight="bold" color="red" id="errMsgText"></mx:Text>
-                </mx:FormItem>
-            </mx:Form>
-            <mx:VBox width="20%">
-                <mx:Panel title="已扫描的 单位 标签数量" width="100%" height="120" horizontalAlign="center"
-                          verticalAlign="middle">
-                    <mx:Label text="{actualCount} / {scanBath.expectedCount}" fontWeight="bold" fontSize="28"/>
-                </mx:Panel>
-                <mx:HBox width="100%" height="100%">
-                    <mx:Panel title="扫描到当前 包装箱 中的 单位 标签数量" width="100%" height="120" horizontalAlign="center"
-                              verticalAlign="middle">
-                        <mx:Label text="{unitCount} / {scanBath.unitsPerCase}"
-                                  fontWeight="bold" fontSize="28"/>
+        <mx:TabNavigator width="100%" height="100%">
+            <mx:VBox label="当前扫描" width="100%" height="100%">
+                <mx:HBox width="100%">
+                    <mx:Form width="80%">
+                        <mx:FormItem label="RUNID:">
+                            <mx:HBox>
+                                <mx:Text text="{scanBath.runId}"></mx:Text>
+                                <mx:Button label="获取runId" click="login()"></mx:Button>
+                                <mx:Button label="提交数据" click="submitData(event)"></mx:Button>
+                                <mx:CheckBox selected="false" id="selectedBox" label="显示已完成数据"
+                                             change="selectedBox_changeHandler(event)"></mx:CheckBox>
+                                <!--<mx:Button label="验证cookie" click="button1_clickHandler(event)"></mx:Button>-->
+                            </mx:HBox>
+                        </mx:FormItem>
+                        <mx:FormItem label="商品:">
+                            <mx:Text text="{scanBath.productTitle}"></mx:Text>
+                        </mx:FormItem>
+                        <mx:FormItem label="批次编号:">
+                            <mx:Text text="{scanBath.manufacturerLot}"></mx:Text>
+                        </mx:FormItem>
+                        <mx:FormItem label="ASIN:">
+                            <mx:Text text="{scanBath.asin}"></mx:Text>
+                        </mx:FormItem>
+                        <mx:FormItem label="备注:">
+                            <mx:Text text="{scanBath.manufacturerReference}"></mx:Text>
+                        </mx:FormItem>
+                        <mx:FormItem label="包装箱 UPC/GTIN:">
+                            <mx:Text text="{scanBath.parentUpc}"></mx:Text>
+                        </mx:FormItem>
+                        <mx:FormItem label="扫描条码:" enabled="{!selectedBox.selected}">
+                            <mx:TextInput fontSize="25" height="40" id="scanItemInput" minWidth="350" text="{keyString}"
+                                          keyDown="scanItemInput_keyDownHandler(event)"></mx:TextInput>
+                        </mx:FormItem>
+                        <mx:FormItem label="当前包装:" enabled="{!selectedBox.selected}">
+                            <mx:HBox width="100%">
+                                <mx:Text fontSize="20" fontWeight="bold" text="{currentCase.itemId}"></mx:Text>
+                                <mx:Button label="删除包装" click="button2_clickHandler(event)"
+                                           visible="{!selectedBox.selected}"></mx:Button>
+                            </mx:HBox>
+                        </mx:FormItem>
+                        <mx:FormItem label="信息:" enabled="{!selectedBox.selected}">
+                            <mx:Text fontSize="20" fontWeight="bold" color="red" id="errMsgText"></mx:Text>
+                        </mx:FormItem>
+                    </mx:Form>
+                    <mx:VBox width="20%">
+                        <mx:Panel title="已扫描的 单位 标签数量" width="100%" height="120" horizontalAlign="center"
+                                  verticalAlign="middle">
+                            <mx:Label text="{actualCount} / {scanBath.expectedCount}" fontWeight="bold" fontSize="28"/>
+                        </mx:Panel>
+                        <mx:HBox width="100%" height="100%">
+                            <mx:Panel title="扫描到当前 包装箱 中的 单位 标签数量" width="100%" height="120" horizontalAlign="center"
+                                      verticalAlign="middle">
+                                <mx:Label text="{unitCount} / {scanBath.unitsPerCase}"
+                                          fontWeight="bold" fontSize="28"/>
+                            </mx:Panel>
+                            <mx:Panel title="已扫描的 包装箱 标签数量" width="100%" height="120" horizontalAlign="center"
+                                      verticalAlign="middle">
+                                <mx:Label text="{actualCaseCount} / {scanBath.expectedCaseCount}" fontWeight="bold"
+                                          fontSize="28"/>
+                            </mx:Panel>
+                        </mx:HBox>
+                    </mx:VBox>
+                </mx:HBox>
+                <mx:HBox width="100%" height="100%" paddingLeft="20" paddingRight="20">
+                    <mx:Panel width="100%" height="100%" title="已扫描包装列表">
+                        <mx:DataGrid id="caseGrid" width="100%" height="100%" dataProvider="{caseList}" fontSize="14"
+                                     itemClick="caseGrid_itemClickHandler(event)">
+                            <mx:columns>
+                                <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
+                                                   labelFunction="xuhaoLabelFun"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId" width="350"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" fontSize="16" fontWeight="bold" headerText="已包装数"
+                                                   dataField="count"
+                                                   width="100"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
+                                                   labelFunction="submitLabelFun"></mx:DataGridColumn>
+                            </mx:columns>
+                        </mx:DataGrid>
                     </mx:Panel>
-                    <mx:Panel title="已扫描的 包装箱 标签数量" width="100%" height="120" horizontalAlign="center"
-                              verticalAlign="middle">
-                        <mx:Label text="{actualCaseCount} / {scanBath.expectedCaseCount}" fontWeight="bold"
-                                  fontSize="28"/>
+                    <mx:Panel width="100%" height="100%" title="已扫描单位列表">
+                        <mx:DataGrid id="unitGrid" width="100%" height="100%" dataProvider="{unitList}" fontSize="14">
+                            <mx:columns>
+                                <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
+                                                   labelFunction="xuhao2LabelFun"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId" width="400"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
+                                                   labelFunction="submitLabelFun"></mx:DataGridColumn>
+                            </mx:columns>
+                        </mx:DataGrid>
                     </mx:Panel>
                 </mx:HBox>
             </mx:VBox>
-        </mx:HBox>
-        <mx:HBox width="100%" height="100%" paddingLeft="20" paddingRight="20">
-            <mx:Panel width="100%" height="100%" title="已扫描包装列表">
-                <mx:DataGrid id="caseGrid" width="100%" height="100%" dataProvider="{caseList}" fontSize="14"
-                             itemClick="caseGrid_itemClickHandler(event)">
-                    <mx:columns>
-                        <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
-                                           labelFunction="xuhaoLabelFun"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId" width="350"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" fontSize="16" fontWeight="bold" headerText="已包装数"
-                                           dataField="count"
-                                           width="100"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
-                                           labelFunction="submitLabelFun"></mx:DataGridColumn>
-                    </mx:columns>
-                </mx:DataGrid>
-            </mx:Panel>
-            <mx:Panel width="100%" height="100%" title="已扫描单位列表">
-                <mx:DataGrid id="unitGrid" width="100%" height="100%" dataProvider="{unitList}" fontSize="14">
-                    <mx:columns>
-                        <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
-                                           labelFunction="xuhao2LabelFun"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId" width="400"></mx:DataGridColumn>
-                        <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
-                                           labelFunction="submitLabelFun"></mx:DataGridColumn>
-                    </mx:columns>
-                </mx:DataGrid>
-            </mx:Panel>
-        </mx:HBox>
+
+            <!--<local:History label="扫描历史" width="100%" height="100%">-->
+<!---->
+            <!--</local:History>-->
+
+        </mx:TabNavigator>
+
+
 
     </mx:Panel>
 

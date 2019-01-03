@@ -59,6 +59,7 @@ public class DataService {
         String unitLabelRegExPattern = (String) runInfo.get("unitLabelRegExPattern");
         String caseLabelRegExPattern = (String) runInfo.get("caseLabelRegExPattern");
         String tempCaseToken = (String) runInfo.get("tempCaseToken");
+        String vendorCode = (String) runInfo.get("vendorCode");
 
         Conditions conditions = Conditions
                 .where("manufacturerLot").is(manufacturerLot)
@@ -75,6 +76,7 @@ public class DataService {
             batch.setManufacturerReference(manufacturerReference);
             batch.setBatchId(UUID.randomUUID().toString());
         }
+        batch.setVendorCode(vendorCode);
         batch.setRunId(runId);
         batch.setUnitsPerCase(Integer.valueOf(unitsPerCase));
         batch.setExpectedCaseCount(Integer.valueOf(expectedCaseCount));
