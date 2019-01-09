@@ -16,6 +16,7 @@ import java.util.Date;
                 @Index(name = "scanTime", columnList = "scanTime"),
                 @Index(name = "batchId", columnList = "batchId"),
                 @Index(name = "itemId", columnList = "itemId"),
+                @Index(name = "submited", columnList = "submited"),
         }
 )
 public class ScanCase {
