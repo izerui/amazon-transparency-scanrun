@@ -266,6 +266,7 @@
             caseList = new ArrayCollection();
             unitList = new ArrayCollection();
             caseGrid.selectedIndex = -1;
+            currentCase = null;
             RemoteObjectUtils.execute("dataService", "findCaseList", function (success:Boolean, data:Object) {
                         if (success) {
                             caseList = data as ArrayCollection;
