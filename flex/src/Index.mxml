@@ -68,6 +68,10 @@
         [Bindable]
         protected var actualCaseCount:Number = 0; //已扫描包装箱数
 
+        private var caseRegExp:RegExp = null;
+
+        private var unitRegExp:RegExp = null;
+
 
         public function set caseList(list:ArrayCollection):void {
             _caseList = list;
@@ -166,7 +170,8 @@
         private function saveUnit(itemId:String):void {
             RemoteObjectUtils.execute("dataService", "saveItem", function (success:Boolean, data:Object) {
                         if (success) {
-                            loadCaseList();
+//                            loadCaseList();
+                            loadUnitList();
                             reset(true, "扫描了货品 " + itemId);
                         } else {
                             reset(false, data.message);
@@ -181,14 +186,12 @@
 
         //是否是单位
         private function isUnit(inputTxt:String):Boolean {
-            var reg:RegExp = new RegExp(scanBath.unitLabelRegExPattern);
-            return reg.test(inputTxt);
+            return unitRegExp.test(inputTxt);
         }
 
         //是否是包装
         private function isCase(inputTxt:String):Boolean {
-            var reg:RegExp = new RegExp(scanBath.caseLabelRegExPattern);
-            return reg.test(inputTxt);
+            return caseRegExp.test(inputTxt);
         }
 
         //取消运行
@@ -214,6 +217,8 @@
                     RemoteObjectUtils.execute("dataService", "createBatch", function (success:Boolean, data:Object) {
                                 if (success) {
                                     scanBath = data as ScanBatch;
+                                    caseRegExp = new RegExp(scanBath.caseLabelRegExPattern);
+                                    unitRegExp = new RegExp(scanBath.unitLabelRegExPattern);
                                     currentCase = null;
                                     loadCaseList();
                                     PopUpManager.removePopUp(login);
@@ -286,17 +291,22 @@
 
         // 刷新单位列表
         public function loadUnitList():void {
-            RemoteObjectUtils.execute("dataService", "findItemList", function (success:Boolean, data:Object) {
-                        if (success) {
-                            unitList = data as ArrayCollection;
-                        } else {
-                            reset(false, data.message);
-                        }
-                    },
-                    scanBath.batchId,
-                    currentCase.itemId,
-                    selectedBox.selected
-            );
+            if (currentCase) {
+                RemoteObjectUtils.execute("dataService", "findItemList", function (success:Boolean, data:Object) {
+                            if (success) {
+                                unitList = data as ArrayCollection;
+                                currentCase.count = unitList.length;
+                                (caseGrid.dataProvider as ArrayCollection).itemUpdated(currentCase);
+                            } else {
+                                reset(false, data.message);
+                            }
+                        },
+                        scanBath.batchId,
+                        currentCase.itemId,
+                        selectedBox.selected
+                );
+
+            }
         }
 
         private function scanItemInput_keyDownHandler(event:KeyboardEvent):void {
@@ -394,7 +404,7 @@
         }
 
         private function tabNavigator1_changeHandler(event:IndexChangedEvent):void {
-            if(event.newIndex == 0){
+            if (event.newIndex == 0) {
                 scanItemInput.setFocus();
             }
         }
@@ -480,7 +490,8 @@
                             <mx:columns>
                                 <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
                                                    labelFunction="xuhaoLabelFun"></mx:DataGridColumn>
-                                <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId" width="350"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" headerText="包装ID号" dataField="itemId"
+                                                   width="350"></mx:DataGridColumn>
                                 <mx:DataGridColumn sortable="false" fontSize="16" fontWeight="bold" headerText="已包装数"
                                                    dataField="count"
                                                    width="100"></mx:DataGridColumn>
@@ -494,7 +505,8 @@
                             <mx:columns>
                                 <mx:DataGridColumn sortable="false" headerText="序号" dataField="itemId" width="60"
                                                    labelFunction="xuhao2LabelFun"></mx:DataGridColumn>
-                                <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId" width="400"></mx:DataGridColumn>
+                                <mx:DataGridColumn sortable="false" headerText="单ID位号" dataField="itemId"
+                                                   width="400"></mx:DataGridColumn>
                                 <mx:DataGridColumn sortable="false" headerText="状态" dataField="requestStatus"
                                                    labelFunction="submitLabelFun"></mx:DataGridColumn>
                             </mx:columns>
@@ -508,7 +520,6 @@
             </local:History>
 
         </mx:TabNavigator>
-
 
 
     </mx:Panel>
