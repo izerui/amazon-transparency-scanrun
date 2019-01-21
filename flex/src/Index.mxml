@@ -38,7 +38,7 @@
 
 
         [Bindable]
-        public var sessionKeepLabel:String = "";
+        public var titleLabelExt:String = "";
 
         // 每5分钟保持session状态 1000 * 60 * 5
         // 每1秒钟保持session状态 1000
@@ -225,7 +225,7 @@
                                     loadCaseList();
                                     PopUpManager.removePopUp(login);
                                     scanItemInput.setFocus();
-                                    startTimerBatch();
+//                                    getLoginUser();
                                 } else {
                                     Alert.show(data.message, '错误');
                                 }
@@ -237,33 +237,33 @@
             PopUpManager.centerPopUp(login);
         }
 
-        // 每5分钟保持session状态
-        private var batchTimer:Timer = new Timer(sessionKeeperMils, 0);
+//        每5分钟保持session状态
+//        private var batchTimer:Timer = new Timer(sessionKeeperMils, 0);
 
-        private function startTimerBatch():void {
-            if (!batchTimer.hasEventListener(TimerEvent.TIMER)) {
-                batchTimer.addEventListener(TimerEvent.TIMER, keepSession);
-            }
-            batchTimer.start();
-            keepSession(null);
+        private function getLoginUser():void {
+//            if (!batchTimer.hasEventListener(TimerEvent.TIMER)) {
+//                batchTimer.addEventListener(TimerEvent.TIMER, keepSession);
+//            }
+//            batchTimer.start();
+            getLoginUser2(null);
         }
 
-        private function stopTimerBatch():void {
-            if (batchTimer.running) {
-                batchTimer.stop();
-            }
-        }
+        //        private function stopTimerBatch():void {
+        //            if (batchTimer.running) {
+        //                batchTimer.stop();
+        //            }
+        //        }
 
-        private function keepSession(event:TimerEvent):void {
+        private function getLoginUser2(event:TimerEvent):void {
             if (!cookie) {
-                stopTimerBatch();
+//                stopTimerBatch();
                 return;
             }
-            RemoteObjectUtils.execute("amazonService", "keepSession", function (success:Boolean, data:Object):void {
+            RemoteObjectUtils.execute("amazonService", "getLoginUser", function (success:Boolean, data:Object):void {
                 if (success) {
-                    sessionKeepLabel = data as String;
+                    titleLabelExt = data as String;
                 } else {
-                    sessionKeepLabel = "请检查网络...";
+                    titleLabelExt = "请检查网络...";
                 }
             }, cookie);
         }
@@ -414,7 +414,7 @@
         ]]>
     </fx:Script>
 
-    <mx:Panel title="SourceMark v2    {sessionKeepLabel}"
+    <mx:Panel title="SourceMark v2    {scanBath.userCode}"
               width="100%"
               height="100%"
               paddingLeft="10"

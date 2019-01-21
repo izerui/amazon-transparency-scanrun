@@ -43,6 +43,8 @@ public class ScanBatch {
     private String tempCaseToken;
     @Column(length = 128)
     private String vendorCode;
+    @Column(length = 128)
+    private String userCode;
 
     @Transient
     private Date beginTime;
@@ -260,5 +262,13 @@ public class ScanBatch {
 
     public void setGtin(String gtin) {
         this.gtin = gtin;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 }

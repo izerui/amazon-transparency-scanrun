@@ -34,5 +34,7 @@ public class ScanBatch {
 
     public var gtin:String;
 
+    public var userCode:String;
+
 }
 }

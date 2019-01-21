@@ -71,7 +71,7 @@ public class AmazonService {
     }
 
 
-    public String keepSession(String cookie) throws IOException {
+    public String getLoginUser(String cookie) throws IOException {
         Request request = new Request.Builder()
                 .url("https://www.amazon.com/gp/css/order-history/ref=nav_youraccount_orders")
                 .header("cookie", cookie)
@@ -81,13 +81,14 @@ public class AmazonService {
         String body = response.body().string();
         Document document = Jsoup.parse(body);
 
-        Elements form = document.getElementsByTag("form");
-        if (form.get(0) != null && form.get(0).attr("name").equals("signIn")) {
-            return "状态更新失败,用户已登出";
-        } else {
-            Element element = document.getElementById("nav-link-accountList");
-            return element.getElementsByIndexEquals(0).get(0).text() + " 状态已更新: " + DateTime.now().toString("yyyy-MM-dd HH:mm:ss");
+        Elements elements = document.getElementsByTag("input");
+        for (Element element : elements) {
+            if(element.attr("name").equals("email")){
+                return element.attr("value");
+            }
         }
+        Element element = document.getElementById("nav-link-accountList");
+        return element.getElementsByIndexEquals(0).get(0).text();
     }
 
 
@@ -124,6 +125,7 @@ public class AmazonService {
             throw new RuntimeException("请登录亚马逊系统并选择一个货柜,然后复制COOKIE重试!");
         }
 
+        info.put("userCode",getLoginUser(cookie));
 
         return info;
     }
