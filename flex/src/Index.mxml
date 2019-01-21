@@ -162,6 +162,7 @@
                             reset(false, data.message);
                         }
                     },
+                    cookie,
                     scanBath.batchId,
                     itemId
             );
@@ -177,6 +178,7 @@
                             reset(false, data.message);
                         }
                     },
+                    cookie,
                     scanBath.batchId,
                     currentCase.itemId,
                     itemId
@@ -395,6 +397,7 @@
                             scanItemInput.setFocus();
                             loadCaseList();
                         },
+                        cookie,
                         scanBath.batchId,
                         caseGrid.selectedItem.itemId
                 );

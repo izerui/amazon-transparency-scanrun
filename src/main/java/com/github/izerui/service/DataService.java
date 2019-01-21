@@ -6,6 +6,7 @@ import com.github.izerui.dao.ScanItemDao;
 import com.github.izerui.entity.ScanBatch;
 import com.github.izerui.entity.ScanCase;
 import com.github.izerui.entity.ScanItem;
+import com.github.izerui.event.UploadCaseEvent;
 import com.github.izerui.jpa.impl.Conditions;
 import com.github.izerui.pojo.ScanItemRequest;
 import com.github.izerui.pojo.ScanItemResult;
@@ -13,6 +14,7 @@ import com.github.izerui.pojo.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Sort;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,8 @@ public class DataService {
     private ScanItemDao scanItemDao;
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    private ApplicationContext applicationContext;
 
 
     /**
@@ -100,7 +104,7 @@ public class DataService {
     /**
      * 扫描包装
      */
-    public void saveCase(String batchId, String itemId) {
+    public void saveCase(String cookie, String batchId, String itemId) {
         logger.info("本次扫描 批次: {} 包装: {}", batchId, itemId);
         Conditions conditions = Conditions
                 .where("batchId").is(batchId)
@@ -113,12 +117,13 @@ public class DataService {
         one.setCount(0);
         one.setScanTime(System.currentTimeMillis());
         scanCaseDao.save(one);
+//        applicationContext.publishEvent(new UploadCaseEvent(this, cookie, batchId));
     }
 
     /**
      * 扫描单位
      */
-    public void saveItem(String batchId, String caseItemId, String itemId) {
+    public void saveItem(String cookie, String batchId, String caseItemId, String itemId) {
         logger.info("本次扫描 批次: {} 单位: {}", batchId, itemId);
         Conditions conditions = Conditions
                 .where("batchId").is(batchId)
@@ -169,13 +174,17 @@ public class DataService {
         return itemList;
     }
 
-
-    public void submitScan(String cookie, String batchId) throws IOException {
+    /**
+     * 上传包装盒到亚马逊
+     *
+     * @param cookie
+     * @param batch
+     */
+    public void uploadCase(String cookie, ScanBatch batch) throws IOException {
         List<ScanItemRequest> requestList = null;
-        ScanBatch batch = scanBatchDao.findOne(Conditions.where("batchId").is(batchId));
-        List<ScanCase> caseList = this.findCaseList(batchId, false);
+        List<ScanCase> caseList = this.findCaseList(batch.getBatchId(), false);
         if (caseList == null || caseList.isEmpty()) {
-            throw new RuntimeException("没有可提交的数据");
+            return;
         }
         for (ScanCase scanCase : caseList) {
             ScanItemRequest caseRequest = new ScanItemRequest();
@@ -189,7 +198,7 @@ public class DataService {
             requestList = new ArrayList<>();
             requestList.add(caseRequest);
 
-            List<ScanItem> scanItems = this.findItemList(batchId, scanCase.getItemId(), false);
+            List<ScanItem> scanItems = this.findItemList(batch.getBatchId(), scanCase.getItemId(), false);
             for (ScanItem scanItem : scanItems) {
                 ScanItemRequest itemRequest = new ScanItemRequest();
                 itemRequest.setItemId(scanItem.getItemId());
@@ -223,16 +232,57 @@ public class DataService {
 
             }
         }
+    }
+
+
+    /**
+     * 上传剩下的并完成提交
+     *
+     * @param cookie
+     * @param batchId
+     * @throws IOException
+     */
+    public void submitScan(String cookie, String batchId) throws IOException {
+        ScanBatch batch = scanBatchDao.findOne(Conditions.where("batchId").is(batchId));
+        uploadCase(cookie, batch);
         amazonService.completeScan(cookie, batch.getRunId());
     }
 
-    public void deleteCase(String batchId, String itemId) {
+    public void deleteCase(String cookie, String batchId, String itemId) throws IOException {
+        ScanBatch batch = scanBatchDao.findOne(Conditions.where("batchId").is(batchId));
         ScanCase one = scanCaseDao.findOne(
                 Conditions
                         .where("batchId").is(batchId)
                         .and("itemId").is(itemId)
         );
         Assert.notNull(one, "不存在的包装 " + itemId);
+
+//        List<ScanItemRequest> requestList = new ArrayList<>();
+//
+//        ScanItemRequest caseRequest = new ScanItemRequest();
+//        caseRequest.setItemId(one.getItemId());
+//        caseRequest.setCaseItemId("");
+//        caseRequest.setParent(true);
+//        caseRequest.setRunId(batch.getRunId());
+//        caseRequest.setActive(false);
+//        caseRequest.setTempCaseToken("empty");
+//        requestList.add(caseRequest);
+//
+//        Conditions conditions = Conditions
+//                .where("batchId").is(batchId)
+//                .and("caseItemId").is(itemId);
+//        List<ScanItem> itemList = scanItemDao.findAll(conditions, Sort.by(Sort.Direction.DESC, "scanTime"));
+//        for (ScanItem scanItem : itemList) {
+//            ScanItemRequest itemRequest = new ScanItemRequest();
+//            itemRequest.setItemId(scanItem.getItemId());
+//            itemRequest.setCaseItemId(itemId);
+//            itemRequest.setParent(false);
+//            itemRequest.setRunId(batch.getRunId());
+//            itemRequest.setActive(false);
+//            itemRequest.setTempCaseToken(batch.getTempCaseToken());
+//            requestList.add(itemRequest);
+//        }
+//        amazonService.scanItems(cookie, requestList);
         scanCaseDao.delete(one);
         scanItemDao.deleteAll(
                 Conditions
@@ -253,4 +303,7 @@ public class DataService {
         scanItemDao.delete(one);
     }
 
+    public ScanBatch getBatch(String batchId) {
+        return scanBatchDao.findOne(Conditions.where("batchId").is(batchId));
+    }
 }

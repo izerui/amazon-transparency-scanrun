@@ -50,3 +50,59 @@
     }
   ]
 }
+
+/// 取消
+
+{
+  "scanItemRequestList": [
+    {
+      "itemId": "ZA:BN777CHPOZAQ3GJAF",
+      "caseItemId": "",
+      "parent": true,
+      "runId": "M1oPrBYLSuygPDZP069Zdw",
+      "active": false,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:1DWPJC7ANBA1XJ8RDH855U61QA",
+      "caseItemId": "ZA:BN777CHPOZAQ3GJAF",
+      "parent": false,
+      "runId": "M1oPrBYLSuygPDZP069Zdw",
+      "active": false,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:93RU4UBEBJB5ZMKYY4ZGAQBW7I",
+      "caseItemId": "ZA:BN777CHPOZAQ3GJAF",
+      "parent": false,
+      "runId": "M1oPrBYLSuygPDZP069Zdw",
+      "active": false,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:KFGZH4J5YJFUNHE9N43NBAJ73Y",
+      "caseItemId": "ZA:BN777CHPOZAQ3GJAF",
+      "parent": false,
+      "runId": "M1oPrBYLSuygPDZP069Zdw",
+      "active": false,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:ORJ8HUEUPFBBDJXGHGXD718AXU",
+      "caseItemId": "ZA:BN777CHPOZAQ3GJAF",
+      "parent": false,
+      "runId": "M1oPrBYLSuygPDZP069Zdw",
+      "active": false,
+      "tempCaseToken": "empty"
+    },
+    {
+      "itemId": "AZ:QPX4M17REFA85AUD396YPKBEFQ",
+      "caseItemId": "ZA:BN777CHPOZAQ3GJAF",
+      "parent": false,
+      "runId": "M1oPrBYLSuygPDZP069Zdw",
+      "active": false,
+      "tempCaseToken": "empty"
+    }
+  ]
+}
+
