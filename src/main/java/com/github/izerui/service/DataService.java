@@ -167,11 +167,10 @@ public class DataService {
      * @param batchId
      * @return
      */
-    public List<ScanItem> findItemList(String batchId, String caseItemId, boolean submited) {
+    public List<ScanItem> findItemList(String batchId, String caseItemId) {
         Conditions conditions = Conditions
                 .where("batchId").is(batchId)
-                .and("caseItemId").is(caseItemId)
-                .and("submited").is(submited);
+                .and("caseItemId").is(caseItemId);
         List<ScanItem> itemList = scanItemDao.findAll(conditions, Sort.by(Sort.Direction.DESC, "scanTime"));
         return itemList;
     }
@@ -200,7 +199,7 @@ public class DataService {
             requestList = new ArrayList<>();
             requestList.add(caseRequest);
 
-            List<ScanItem> scanItems = this.findItemList(batch.getBatchId(), scanCase.getItemId(), false);
+            List<ScanItem> scanItems = this.findItemList(batch.getBatchId(), scanCase.getItemId());
             for (ScanItem scanItem : scanItems) {
                 ScanItemRequest itemRequest = new ScanItemRequest();
                 itemRequest.setItemId(scanItem.getItemId());

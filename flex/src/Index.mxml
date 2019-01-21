@@ -304,8 +304,7 @@
                             }
                         },
                         scanBath.batchId,
-                        currentCase.itemId,
-                        selectedBox.selected
+                        currentCase.itemId
                 );
 
             }
