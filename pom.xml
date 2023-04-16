@@ -139,14 +139,63 @@
 
     <repositories>
         <repository>
+            <id>nexus</id>
+            <url>http://mgr.tongxuepie.com/nexus/content/groups/public/</url>
+        </repository>
+
+        <repository>
+            <id>huawei-cloud</id>
+            <url>https://mirrors.huaweicloud.com/repository/maven/huaweicloudsdk/</url>
+        </repository>
+
+        <repository>
+            <id>tika</id>
+            <name>tika</name>
+            <url>https://mvnrepository.com/artifact/org.apache.tika/tika-core/</url>
+        </repository>
+
+        <repository>
+            <id>mavensw</id>
+            <name>mavensw</name>
+            <url>https://mvnrepository.com/artifact/org.swinglabs/swingx/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>maven</id>
+            <name>maven</name>
+            <url>http://repo.maven.apache.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
+
     </repositories>
 
 
